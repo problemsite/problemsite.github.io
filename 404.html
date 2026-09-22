@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Página não encontrada · Problems</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#00e8e8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2300e8e8'/%3E%3Cpath d='M50 30 88 52v60H12V52Z' fill='%23fff' stroke='%23000' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M50 48 43 57M63 55l-6 9M29 66l-1 8' stroke='%23000' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#00e8e8;--cyan-2:#00d2dc;--blue:#2a86d6;--blue-deep:#0d4a93;--sky:#c4f2ff;--paper:#f4feff;--text:#123a44;--soft:#5d8189}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;font-family:"Nunito",system-ui,sans-serif;color:var(--text);
+  background:var(--paper);overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+
+.top{position:relative;overflow:hidden;text-align:center;padding:26px 16px 70px;
+  background:radial-gradient(120% 80% at 50% 0%,#5ff6f6 0%,var(--cyan) 55%,var(--cyan-2) 100%)}
+.floaters span{position:absolute;width:var(--s);aspect-ratio:1/1.1;background:#fff;opacity:.16;
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);animation:drift var(--d) ease-in-out infinite alternate}
+@keyframes drift{to{transform:translateY(-18px) rotate(14deg)}}
+.logo-link{position:relative;z-index:1;display:inline-block}
+.logo{display:block;width:min(52vw,230px);height:auto;filter:drop-shadow(0 5px 8px rgba(13,74,147,.25))}
+
+/* 404 com o personagem espiando por trás */
+.stage{position:relative;width:min(86vw,380px);margin:14px auto 0;padding-top:clamp(56px,17vw,84px)}
+.peek{position:absolute;left:50%;top:0;width:clamp(110px,32vw,150px);z-index:0;animation:peek 4s ease-in-out infinite}
+.peek .face{transform-origin:150px 200px;animation:blink 4s infinite}
+@keyframes peek{0%,100%{transform:translate(-50%,16px) rotate(-6deg)}20%,65%{transform:translate(-50%,0) rotate(6deg)}}
+@keyframes blink{0%,40%,44%,100%{transform:scaleY(1)}42%{transform:scaleY(.15)}}
+.big{position:relative;z-index:1;display:block;width:100%;height:auto}
+.q{position:absolute;z-index:2;font-family:"Lilita One",sans-serif;color:#fff;font-size:2.2rem;text-shadow:0 3px 0 var(--blue-deep);animation:float 2.6s ease-in-out infinite}
+.q1{top:8px;left:12%}.q2{top:30px;right:12%;font-size:1.6rem;animation-delay:.7s}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-10deg)}50%{transform:translateY(-10px) rotate(10deg)}}
+
+.sheet{position:relative;flex:1;margin-top:-30px;background:var(--paper);border-radius:32px 32px 0 0;
+  box-shadow:0 -10px 30px rgba(0,80,90,.12);padding:28px 16px 36px;text-align:center}
+h1{margin:0;font-family:"Lilita One",sans-serif;font-weight:400;font-size:1.9rem;color:var(--blue-deep)}
+p{margin:8px auto 0;max-width:30ch;font-weight:700;line-height:1.45;color:var(--soft)}
+.path{display:inline-block;max-width:100%;margin-top:12px;padding:4px 12px;border-radius:999px;background:var(--sky);
+  color:var(--blue-deep);font-weight:900;font-size:.85rem;word-break:break-all}
+.actions{display:flex;flex-direction:column;gap:12px;max-width:360px;margin:24px auto 0}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:0 20px;border-radius:18px;
+  font-family:"Lilita One",sans-serif;font-size:1.15rem;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.btn-main{color:#fff;background:linear-gradient(#6fd3f7,var(--blue));box-shadow:0 4px 0 var(--blue-deep);text-shadow:0 2px 0 rgba(13,74,147,.5)}
+.btn-alt{background:#fff;color:var(--blue-deep);box-shadow:0 1px 0 #d8f1f4,0 10px 24px -12px rgba(0,70,90,.3)}
+#suggest{display:none}#suggest.show{display:flex}
+@media (min-width:640px){.actions{flex-direction:row;max-width:560px}.btn{flex:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="floaters" aria-hidden="true">
+    <span style="--s:40px;--d:6s;left:6%;top:24%"></span>
+    <span style="--s:22px;--d:4s;left:84%;top:10%"></span>
+    <span style="--s:58px;--d:7s;left:84%;top:62%"></span>
+    <span style="--s:26px;--d:5s;left:10%;top:74%"></span>
+  </div>
+  <a class="logo-link" href="/" aria-label="Voltar ao início"><img class="logo" src="/logo.svg" alt="Problems" width="230" height="58"></a>
+
+  <div class="stage" aria-hidden="true">
+    <span class="q q1">?</span><span class="q q2">?</span>
+    <svg class="peek" viewBox="0 0 300 330">
+      <path d="M150 12 284 88v154L150 318 16 242V88Z" fill="#fff" stroke="#000" stroke-width="9" stroke-linejoin="round"/>
+      <g class="face"><path d="M148 84 111 126M215 115l-28 42M61 169l-3 33" fill="none" stroke="#000" stroke-width="9" stroke-linecap="round"/></g>
+    </svg>
+    <svg class="big" viewBox="-6 -6 382 182" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="f4" gradientUnits="userSpaceOnUse" x1="0" y1="10" x2="0" y2="142">
+<stop offset="0" stop-color="#aee7ff"/><stop offset=".45" stop-color="#77d0f7"/><stop offset="1" stop-color="#2b90d4"/></linearGradient>
+<linearGradient id="o4" gradientUnits="userSpaceOnUse" x1="0" y1="10" x2="0" y2="155">
+<stop offset="0" stop-color="#2f8ddb"/><stop offset=".6" stop-color="#175fae"/><stop offset="1" stop-color="#0e4f96"/></linearGradient><mask id="mn1"><path d="M74 26 L24 92 H104 M74 26 V128" fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/><path d="M74 26 L24 92 H104 M74 26 V128" fill="none" stroke="#000" stroke-width="25.0" stroke-linecap="round" stroke-linejoin="round"/></mask><mask id="mn2"><ellipse cx="186" cy="77" rx="43" ry="51" fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="186" cy="77" rx="43" ry="51" fill="none" stroke="#000" stroke-width="25.0" stroke-linecap="round" stroke-linejoin="round"/></mask><mask id="mn3"><path d="M312 26 L262 92 H342 M312 26 V128" fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/><path d="M312 26 L262 92 H342 M312 26 V128" fill="none" stroke="#000" stroke-width="25.0" stroke-linecap="round" stroke-linejoin="round"/></mask></defs>
+<g transform="translate(0,9)" opacity=".9"><path d="M74 26 L24 92 H104 M74 26 V128" fill="none" stroke="#0c4690" stroke-width="52" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="186" cy="77" rx="43" ry="51" fill="none" stroke="#0c4690" stroke-width="52" stroke-linecap="round" stroke-linejoin="round"/><path d="M312 26 L262 92 H342 M312 26 V128" fill="none" stroke="#0c4690" stroke-width="52" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g><path d="M74 26 L24 92 H104 M74 26 V128" fill="none" stroke="url(#o4)" stroke-width="52" stroke-linecap="round" stroke-linejoin="round"/><path d="M74 26 L24 92 H104 M74 26 V128" fill="none" stroke="url(#f4)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/><rect x="-20" y="-20" width="380" height="220" fill="#f2fdff" opacity=".6" mask="url(#mn1)"/></g><g><ellipse cx="186" cy="77" rx="43" ry="51" fill="none" stroke="url(#o4)" stroke-width="52" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="186" cy="77" rx="43" ry="51" fill="none" stroke="url(#f4)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/><rect x="-20" y="-20" width="380" height="220" fill="#f2fdff" opacity=".6" mask="url(#mn2)"/></g><g><path d="M312 26 L262 92 H342 M312 26 V128" fill="none" stroke="url(#o4)" stroke-width="52" stroke-linecap="round" stroke-linejoin="round"/><path d="M312 26 L262 92 H342 M312 26 V128" fill="none" stroke="url(#f4)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/><rect x="-20" y="-20" width="380" height="220" fill="#f2fdff" opacity=".6" mask="url(#mn3)"/></g>
+</svg>
+  </div>
+</header>
+
+<main class="sheet">
+  <h1>Opa, deu um problema!</h1>
+  <p>Essa página não existe ou mudou de lugar. Mas calma, os outros sites estão todos aqui!</p>
+  <span class="path" id="path"></span>
+
+  <div class="actions">
+    <a class="btn btn-alt" id="suggest" href="/"></a>
+    <a class="btn btn-main" href="/">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 3l9 8M5 9.5V21h14V9.5"/></svg>
+      Ver todos os sites
+    </a>
+  </div>
+</main>
+
+<script>
+(() => {
+  const USER = "problemsite", HOME = `${USER}.github.io`;
+  const path = decodeURIComponent(location.pathname);
+  document.getElementById("path").textContent = path;
+
+  // tenta adivinhar qual site a pessoa queria abrir
+  const wanted = (path.split("/").filter(Boolean)[0] || "").toLowerCase();
+  if (!wanted) return;
+
+  const SMALL = new Set(["de","do","da","dos","das","e","o","a","em","no","na","com","para"]);
+  const pretty = n => n.replace(/[-_.]+/g, " ").trim().split(/\s+/)
+    .map((w, i) => (i && SMALL.has(w.toLowerCase())) ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+
+  const dist = (a, b) => {
+    const m = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+    for (let j = 1; j <= b.length; j++) m[0][j] = j;
+    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+      m[i][j] = Math.min(m[i-1][j] + 1, m[i][j-1] + 1, m[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+    return m[a.length][b.length];
+  };
+
+  const show = sites => {
+    let best = null, score = Infinity;
+    for (const s of sites) {
+      const l = s.name.toLowerCase();
+      const d = (l.includes(wanted) || wanted.includes(l)) ? 0 : dist(wanted, l);
+      if (d < score) { score = d; best = s; }
+    }
+    if (best && score <= Math.max(2, Math.floor(best.name.length / 3))) {
+      const a = document.getElementById("suggest");
+      a.href = best.url;
+      a.textContent = `Você quis dizer “${best.title || pretty(best.name)}”?`;
+      a.classList.add("show");
+    }
+  };
+
+  // usa a lista salva pela página inicial, se existir
+  try {
+    const c = JSON.parse(localStorage.getItem("problems-sites-v2"));
+    if (c && c.sites) return show(c.sites);
+  } catch {}
+
+  fetch(`https://api.github.com/users/${USER}/repos?per_page=100`)
+    .then(r => r.ok ? r.json() : [])
+    .then(list => show(list.filter(r => r.has_pages && r.name.toLowerCase() !== HOME)
+      .map(r => ({ name: r.name, url: (r.homepage && /^https?:\/\//i.test(r.homepage)) ? r.homepage : `/${r.name}/` }))))
+    .catch(() => {});
+})();
+</script>
+</body>
+</html>
