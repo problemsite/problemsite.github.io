@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Central · Problems</title>
+<title>Entrar</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#00e8e8">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230d4a93'/%3E%3Cpath d='M50 12 84 31v38L50 88 16 69V31Z' fill='%2300e8e8' stroke='%23fff' stroke-width='6' stroke-linejoin='round'/%3E%3Crect x='38' y='46' width='24' height='20' rx='4' fill='%23fff'/%3E%3Cpath d='M42 46v-6a8 8 0 0 1 16 0v6' fill='none' stroke='%23fff' stroke-width='5'/%3E%3C/svg%3E">
@@ -34,8 +34,8 @@ h1,h2,h3{font-family:"Lilita One",sans-serif;font-weight:400;margin:0}
 input[type=email],input[type=text]{border:2px solid var(--line);border-radius:12px;padding:11px 13px;font-size:15px;font-weight:800;color:var(--text);outline:none;min-width:0}
 input:focus{border-color:var(--blue)}
 /* login */
-.center{min-height:calc(100vh - 100px);display:grid;place-items:center;padding:24px}
-.login{width:440px;max-width:100%;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
+.center{min-height:100vh;display:grid;place-items:center;padding:24px}
+.login{width:360px;max-width:100%;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
 .login .big{width:96px;height:106px;font-size:44px}
 .login input{width:100%;text-align:center}
 .msg{font-weight:900;font-size:14px;min-height:20px}
@@ -69,7 +69,7 @@ select{border:2px solid var(--line);border-radius:10px;padding:7px 8px;font-weig
 </style>
 </head>
 <body>
-<header class="top"><div class="in">
+<header class="top hide" id="topBar"><div class="in">
   <div class="hexi">🔐</div><h1>Central dos Sites</h1>
   <div class="who hide" id="who"><span id="whoMail"></span><button class="btn ghost sm" id="bOut">Sair</button></div>
 </div></header>
@@ -79,20 +79,15 @@ select{border:2px solid var(--line);border-radius:10px;padding:7px 8px;font-weig
 
 <!-- login -->
 <div class="center hide" id="vLogin"><div class="login card">
-  <div class="hexi big">✉️</div>
   <h2>Entrar</h2>
-  <p class="hint">Digite o e-mail da equipe. Vai chegar um <b>link de confirmação</b> — abra ele <b>neste mesmo navegador</b>. Depois disso este navegador fica liberado (até clicar em "Sair").</p>
-  <input type="email" id="inMail" placeholder="seu@email.com" autocomplete="email">
+  <input type="email" id="inMail" placeholder="e-mail" autocomplete="email">
   <button class="btn" id="bSend">Enviar link</button>
   <div class="msg" id="loginMsg"></div>
 </div></div>
 
 <!-- sem permissão -->
 <div class="center hide" id="vWait"><div class="login card">
-  <div class="hexi big">🚫</div>
-  <h2>E-mail sem acesso</h2>
-  <p class="hint">Este e-mail não é o da equipe. Saia e entre com o e-mail certo.</p>
-  <p class="hint">Se for o e-mail certo: confira se ele está igual (tudo minúsculo) nas regras do Firebase.</p>
+  <h2>Sem acesso</h2>
   <button class="btn" onclick="firebase.auth().signOut().then(()=>location.reload())">Sair</button>
 </div></div>
 
@@ -154,8 +149,7 @@ const now = () => Date.now() + offset;
     try {
       await auth.signInWithEmailLink(email, location.href);
       localStorage.removeItem("central_email");
-      toast("Entrou! ✅");
-    } catch (e) { toast("Link inválido ou expirado. Peça outro.", true); }
+    } catch (e) { toast("Link inválido.", true); }
     history.replaceState(null, "", location.pathname);
   }
   auth.onAuthStateChanged(onUser);
@@ -163,14 +157,14 @@ const now = () => Date.now() + offset;
 
 $("#bSend").onclick = async () => {
   const email = $("#inMail").value.trim();
-  if (!/^\S+@\S+\.\S+$/.test(email)) { $("#loginMsg").className = "msg bad"; $("#loginMsg").textContent = "Digite um e-mail válido."; return; }
+  if (!/^\S+@\S+\.\S+$/.test(email)) { $("#loginMsg").className = "msg bad"; $("#loginMsg").textContent = "E-mail inválido."; return; }
   $("#bSend").disabled = true;
   try {
     await auth.sendSignInLinkToEmail(email, { url: location.origin + location.pathname, handleCodeInApp: true });
     localStorage.setItem("central_email", email);
-    $("#loginMsg").className = "msg ok"; $("#loginMsg").textContent = "Link enviado! Confira a caixa de entrada (e o spam).";
+    $("#loginMsg").className = "msg ok"; $("#loginMsg").textContent = "Link enviado.";
   } catch (e) {
-    $("#loginMsg").className = "msg bad"; $("#loginMsg").textContent = "Erro: " + (e.code || e.message);
+    $("#loginMsg").className = "msg bad"; $("#loginMsg").textContent = "Não foi possível enviar.";
   }
   $("#bSend").disabled = false;
 };
@@ -179,14 +173,14 @@ $("#bOut").onclick = async () => { await auth.signOut(); location.reload(); };
 
 let started = false;
 async function onUser(u) {
-  if (!u || u.isAnonymous) { $("#who").classList.add("hide"); show("vLogin"); return; }
+  if (!u || u.isAnonymous) { $("#who").classList.add("hide"); $("#topBar").classList.add("hide"); show("vLogin"); return; }
   $("#who").classList.remove("hide"); $("#whoMail").textContent = u.email || "";
   let isAdmin = false;
   try { await db.ref("admcheck").once("value"); isAdmin = true; } catch (e) {}
   if (!isAdmin) {
     show("vWait"); return;
   }
-  show("vPanel");
+  show("vPanel"); $("#topBar").classList.remove("hide");
   if (!started) { started = true; startPanel(u); }
 }
 
