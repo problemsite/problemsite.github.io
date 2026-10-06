@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Central · Problems</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#00e8e8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230d4a93'/%3E%3Cpath d='M50 12 84 31v38L50 88 16 69V31Z' fill='%2300e8e8' stroke='%23fff' stroke-width='6' stroke-linejoin='round'/%3E%3Crect x='38' y='46' width='24' height='20' rx='4' fill='%23fff'/%3E%3Cpath d='M42 46v-6a8 8 0 0 1 16 0v6' fill='none' stroke='%23fff' stroke-width='5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#00e8e8;--cyan2:#00c6d6;--blue:#2a86d6;--deep:#0d4a93;--paper:#f4feff;--card:#fff;--text:#123a44;--soft:#5d8189;--line:#cdeef3;--ok:#13b26b;--okbg:#e2fbef;--bad:#e0425f;--badbg:#ffe9ee;--warn:#d58b00;--warnbg:#fff4da}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:"Nunito",system-ui,sans-serif;color:var(--text);background:var(--paper)}
+button,input,select{font-family:inherit}
+h1,h2,h3{font-family:"Lilita One",sans-serif;font-weight:400;margin:0}
+.top{background:radial-gradient(120% 90% at 50% 0%,#5ff6f6 0%,var(--cyan) 55%,var(--cyan2) 100%);padding:22px 20px 26px;color:#fff;position:relative;overflow:hidden}
+.top .in{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.top h1{font-size:34px;text-shadow:0 3px 0 var(--deep)}
+.top .who{margin-left:auto;display:flex;align-items:center;gap:10px;font-weight:900;color:var(--deep);font-size:14px}
+.hexi{width:46px;height:51px;background:#fff;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:grid;place-items:center;font-size:22px}
+.btn{border:0;cursor:pointer;border-radius:12px;padding:10px 16px;font-weight:900;font-size:14px;background:var(--deep);color:#fff;box-shadow:0 3px 0 rgba(0,0,0,.18);transition:transform .1s,filter .15s;white-space:nowrap}
+.btn:hover{filter:brightness(1.1)}.btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ok{background:var(--ok)}.btn.bad{background:var(--bad)}.btn.ghost{background:#fff;color:var(--deep);box-shadow:inset 0 0 0 2px var(--line)}.btn.sm{padding:7px 11px;font-size:13px;border-radius:10px}
+.wrap{max-width:1080px;margin:0 auto;padding:22px 18px 70px;display:flex;flex-direction:column;gap:18px}
+.card{background:var(--card);border-radius:18px;box-shadow:0 6px 22px rgba(13,74,147,.08);border:2px solid var(--line);padding:18px}
+.card h2{font-size:24px;color:var(--deep);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card h2 small{font-family:"Nunito";font-size:13px;color:var(--soft);font-weight:800}
+.hint{color:var(--soft);font-size:13px;font-weight:800;line-height:1.45}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input[type=email],input[type=text]{border:2px solid var(--line);border-radius:12px;padding:11px 13px;font-size:15px;font-weight:800;color:var(--text);outline:none;min-width:0}
+input:focus{border-color:var(--blue)}
+/* login */
+.center{min-height:calc(100vh - 100px);display:grid;place-items:center;padding:24px}
+.login{width:440px;max-width:100%;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
+.login .big{width:96px;height:106px;font-size:44px}
+.login input{width:100%;text-align:center}
+.msg{font-weight:900;font-size:14px;min-height:20px}
+.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
+.uidbox{background:#f2fbfd;border:2px dashed var(--line);border-radius:12px;padding:10px 12px;font-family:ui-monospace,Consolas,monospace;font-size:14px;word-break:break-all;font-weight:700}
+/* sites */
+.sites{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.site{display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(170px,1fr) auto;gap:12px;align-items:center;border:2px solid var(--line);border-radius:14px;padding:12px 14px;background:#fbffff}
+.site.open{border-color:#9be7c3;background:#f3fff9}
+.site.closed{border-color:#ffd0da;background:#fffafb}
+.site .nm{font-family:"Lilita One";font-size:19px;color:var(--deep);line-height:1.1}
+.site .meta{font-size:12px;color:var(--soft);font-weight:800;display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.site .meta a{color:var(--blue);text-decoration:none}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:5px 11px;font-weight:900;font-size:13px;white-space:nowrap}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.bad{background:var(--badbg);color:var(--bad)}.pill.warn{background:var(--warnbg);color:var(--warn)}.pill.mut{background:#eef6f8;color:var(--soft)}
+.acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+select{border:2px solid var(--line);border-radius:10px;padding:7px 8px;font-weight:900;color:var(--deep);background:#fff}
+.cfg{grid-column:1/-1;display:none;gap:8px;align-items:center;flex-wrap:wrap;border-top:2px dashed var(--line);padding-top:10px;margin-top:2px}
+.site.cfgon .cfg{display:flex}
+.cfg input{flex:1;min-width:220px;font-size:13px;padding:8px 10px}
+.list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.li{display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-radius:12px;padding:9px 12px;flex-wrap:wrap}
+.li .t{flex:1;min-width:0;font-weight:900;overflow:hidden;text-overflow:ellipsis}
+.li .t small{display:block;color:var(--soft);font-weight:800;font-family:ui-monospace,Consolas,monospace;font-size:11px}
+#toast{position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none}
+.t1{background:var(--deep);color:#fff;font-weight:900;padding:10px 16px;border-radius:99px;box-shadow:0 6px 18px rgba(0,0,0,.2);animation:tin .3s}
+.t1.bad{background:var(--bad)}
+@keyframes tin{from{transform:translateY(-12px);opacity:0}}
+.hide{display:none!important}
+@media (max-width:760px){.site{grid-template-columns:1fr}.acts{justify-content:flex-start}}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div class="hexi">🔐</div><h1>Central dos Sites</h1>
+  <div class="who hide" id="who"><span id="whoMail"></span><button class="btn ghost sm" id="bOut">Sair</button></div>
+</div></header>
+
+<!-- carregando -->
+<div class="center" id="vLoad"><div class="hint">Carregando…</div></div>
+
+<!-- login -->
+<div class="center hide" id="vLogin"><div class="login card">
+  <div class="hexi big">✉️</div>
+  <h2>Entrar</h2>
+  <p class="hint">Digite o e-mail da equipe. Vai chegar um <b>link de confirmação</b> — abra ele <b>neste mesmo navegador</b>. Depois disso este navegador fica liberado (até clicar em "Sair").</p>
+  <input type="email" id="inMail" placeholder="seu@email.com" autocomplete="email">
+  <button class="btn" id="bSend">Enviar link</button>
+  <div class="msg" id="loginMsg"></div>
+</div></div>
+
+<!-- sem permissão -->
+<div class="center hide" id="vWait"><div class="login card">
+  <div class="hexi big">🚫</div>
+  <h2>E-mail sem acesso</h2>
+  <p class="hint">Este e-mail não é o da equipe. Saia e entre com o e-mail certo.</p>
+  <p class="hint">Se for o e-mail certo: confira se ele está igual (tudo minúsculo) nas regras do Firebase.</p>
+  <button class="btn" onclick="firebase.auth().signOut().then(()=>location.reload())">Sair</button>
+</div></div>
+
+<!-- painel -->
+<main class="wrap hide" id="vPanel">
+  <section class="card">
+    <h2>🌐 Sites <small id="countTxt"></small></h2>
+    <p class="hint">Liberado = qualquer pessoa com o link pode jogar. Bloqueado = tela "fechado" e o Firebase recusa tudo. Navegadores liberados (que entraram com o e-mail da equipe) sempre veem tudo e abrem os ADMs.</p>
+    <div class="row" style="margin-top:12px">
+      <button class="btn bad" id="bLockAll">🔒 Bloquear todos</button>
+      <button class="btn ghost" id="bRefresh">↻ Atualizar lista</button>
+      <span style="flex:1"></span>
+      <input type="text" id="inRepo" placeholder="nome_do_repositorio" style="width:200px;padding:8px 10px;font-size:13px">
+      <button class="btn sm" id="bAddRepo">＋ Cadastrar pelo nome</button>
+    </div>
+    <div class="sites" id="sites"></div>
+  </section>
+
+</main>
+
+<div id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+const CONFIG = {
+  apiKey: "AIzaSyBQzl3bmbAEcyNfwqYj69DZHLjFfydlghI",
+  authDomain: "jogos-github.firebaseapp.com",
+  databaseURL: "https://jogos-github-default-rtdb.firebaseio.com",
+  projectId: "jogos-github",
+  storageBucket: "jogos-github.firebasestorage.app",
+  messagingSenderId: "304376569454",
+  appId: "1:304376569454:web:cd724cf50bef036a37907f"
+};
+const GH_USER = "problemsite";
+// O que os JOGADORES podem gravar em cada site (o resto só o ADM).
+const PRESETS = {
+  adivinhe_a_cor: "players, game, picks, results, back",
+  logo_de_memoria: "players, seats, game, drawings, live",
+  principal: ""
+};
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const toast = (m, bad) => { const t = document.createElement("div"); t.className = "t1" + (bad ? " bad" : ""); t.textContent = m; $("#toast").appendChild(t); setTimeout(() => t.remove(), 3200); };
+const show = (id) => ["vLoad", "vLogin", "vWait", "vPanel"].forEach((v) => $("#" + v).classList.toggle("hide", v !== id));
+
+firebase.initializeApp(CONFIG);
+const auth = firebase.auth(), db = firebase.database();
+let offset = 0; db.ref(".info/serverTimeOffset").on("value", (s) => (offset = s.val() || 0));
+const now = () => Date.now() + offset;
+
+// ---------- login por link no e-mail ----------
+(async () => {
+  if (auth.isSignInWithEmailLink(location.href)) {
+    let email = localStorage.getItem("central_email");
+    if (!email) email = prompt("Confirme o seu e-mail para entrar:");
+    try {
+      await auth.signInWithEmailLink(email, location.href);
+      localStorage.removeItem("central_email");
+      toast("Entrou! ✅");
+    } catch (e) { toast("Link inválido ou expirado. Peça outro.", true); }
+    history.replaceState(null, "", location.pathname);
+  }
+  auth.onAuthStateChanged(onUser);
+})();
+
+$("#bSend").onclick = async () => {
+  const email = $("#inMail").value.trim();
+  if (!/^\S+@\S+\.\S+$/.test(email)) { $("#loginMsg").className = "msg bad"; $("#loginMsg").textContent = "Digite um e-mail válido."; return; }
+  $("#bSend").disabled = true;
+  try {
+    await auth.sendSignInLinkToEmail(email, { url: location.origin + location.pathname, handleCodeInApp: true });
+    localStorage.setItem("central_email", email);
+    $("#loginMsg").className = "msg ok"; $("#loginMsg").textContent = "Link enviado! Confira a caixa de entrada (e o spam).";
+  } catch (e) {
+    $("#loginMsg").className = "msg bad"; $("#loginMsg").textContent = "Erro: " + (e.code || e.message);
+  }
+  $("#bSend").disabled = false;
+};
+$("#inMail").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#bSend").click(); });
+$("#bOut").onclick = async () => { await auth.signOut(); location.reload(); };
+
+let started = false;
+async function onUser(u) {
+  if (!u || u.isAnonymous) { $("#who").classList.add("hide"); show("vLogin"); return; }
+  $("#who").classList.remove("hide"); $("#whoMail").textContent = u.email || "";
+  let isAdmin = false;
+  try { await db.ref("admcheck").once("value"); isAdmin = true; } catch (e) {}
+  if (!isAdmin) {
+    show("vWait"); return;
+  }
+  show("vPanel");
+  if (!started) { started = true; startPanel(u); }
+}
+
+// ---------- painel ----------
+let ctl = {}, repos = [], probe = {}, openCfg = new Set();
+function startPanel(me) {
+  db.ref("controle/sites").on("value", (s) => { ctl = s.val() || {}; render(); });
+  loadRepos();
+  setInterval(render, 15000); // atualiza o "liberado até"
+}
+async function loadRepos() {
+  try {
+    let page = 1, all = [];
+    while (page < 6) {
+      const r = await fetch(`https://api.github.com/users/${GH_USER}/repos?per_page=100&page=${page}`);
+      if (!r.ok) break;
+      const j = await r.json(); all = all.concat(j); if (j.length < 100) break; page++;
+    }
+    repos = all.filter((r) => !r.fork && r.name.toLowerCase() !== `${GH_USER}.github.io`).map((r) => r.name);
+  } catch (e) { repos = []; }
+  render();
+  // verifica se cada site já tem a trava instalada
+  for (const name of Object.keys(ctl).concat(repos)) checkProbe(name);
+}
+async function checkProbe(name) {
+  if (probe[name] || name === "principal") return;
+  probe[name] = { loading: true };
+  const get = async (p) => { try { const r = await fetch(p, { cache: "no-store" }); return r.ok ? await r.text() : null; } catch (e) { return null; } };
+  const site = await get(`/${name}/`), adm = await get(`/${name}/ADM/`);
+  probe[name] = { online: !!site, trava: !!(site && site.includes("trava.js")), adm: adm !== null, admTrava: !!(adm && adm.includes("trava.js")) };
+  render();
+}
+$("#bRefresh").onclick = () => { probe = {}; loadRepos(); };
+
+const isOpen = (c) => !!(c && c.open === true && (!c.until || c.until > now()));
+const fmtT = (t) => new Date(t).toLocaleString("pt-BR", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" });
+const nodesTxt = (c, name) => c && c.escrita ? Object.keys(c.escrita).join(", ") : (PRESETS[name] ?? "");
+
+function render() {
+  const names = Array.from(new Set(["principal"].concat(Object.keys(ctl), Object.keys(PRESETS), repos)));
+  const reg = names.filter((n) => ctl[n]), unreg = names.filter((n) => !ctl[n]);
+  $("#countTxt").textContent = `${reg.length} com trava · ${unreg.length} sem cadastro`;
+  const row = (name) => {
+    if (!probe[name] && name !== "principal") setTimeout(() => checkProbe(name), 0);
+    const c = ctl[name], p = probe[name] || { loading: true }, open = isOpen(c), isMain = name === "principal";
+    const url = isMain ? "/" : `/${name}/`;
+    let pill;
+    if (!c) pill = `<span class="pill warn">⚠️ Não cadastrado</span>`;
+    else if (open) pill = `<span class="pill ok">🔓 Liberado${c.until ? " até " + fmtT(c.until) : ""}</span>`;
+    else pill = `<span class="pill bad">🔒 Bloqueado</span>`;
+    const tr = isMain ? "" : p.loading ? `<span>verificando…</span>` : p.online === false ? `<span>site fora do ar</span>`
+      : `<span>${p.trava ? "✅ trava no jogo" : "⚠️ jogo sem trava"}</span>${p.adm ? `<span>${p.admTrava ? "✅ trava no ADM" : "⚠️ ADM sem trava"}</span>` : ""}`;
+    const acts = !c
+      ? `<button class="btn sm" data-reg="${esc(name)}">Cadastrar</button>`
+      : `<button class="btn ok sm" data-open="${esc(name)}">Liberar</button>
+         <select data-for="${esc(name)}"><option value="1">por 1h</option><option value="2" selected>por 2h</option><option value="4">por 4h</option><option value="8">por 8h</option><option value="24">por 24h</option></select>
+         <button class="btn ok sm" data-opent="${esc(name)}">Liberar por tempo</button>
+         <button class="btn bad sm" data-close="${esc(name)}">Bloquear</button>
+         ${isMain ? "" : `<button class="btn ghost sm" data-cfg="${esc(name)}">⚙️</button>`}`;
+    return `<div class="site ${c ? (open ? "open" : "closed") : ""} ${openCfg.has(name) ? "cfgon" : ""}">
+      <div><div class="nm">${isMain ? "🏠 Site principal" : esc(name)}</div>
+        <div class="meta"><a href="${url}" target="_blank">abrir ↗</a>${!isMain && p.adm ? `<a href="/${esc(name)}/ADM/" target="_blank">ADM ↗</a>` : ""}${tr}</div></div>
+      <div>${pill}</div>
+      <div class="acts">${acts}</div>
+      ${c && !isMain ? `<div class="cfg"><span class="hint">Pastas que os jogadores podem gravar:</span><input type="text" data-nodes="${esc(name)}" value="${esc(nodesTxt(c, name))}"><button class="btn sm" data-save="${esc(name)}">Salvar</button><button class="btn bad sm" data-unreg="${esc(name)}">Descadastrar</button></div>` : ""}
+    </div>`;
+  };
+  $("#sites").innerHTML = reg.concat(unreg).map(row).join("");
+}
+const parseNodes = (txt) => { const o = {}; txt.split(/[,\s]+/).map((s) => s.trim()).filter((s) => /^[\w-]+$/.test(s)).forEach((s) => (o[s] = true)); return Object.keys(o).length ? o : null; };
+$("#sites").addEventListener("click", async (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  const d = b.dataset;
+  try {
+    if (d.reg) { await db.ref("controle/sites/" + d.reg).set({ open: false, escrita: parseNodes(PRESETS[d.reg] ?? ""), t: firebase.database.ServerValue.TIMESTAMP }); toast("Cadastrado (bloqueado). Ajuste as pastas em ⚙️ se precisar."); if (!PRESETS[d.reg] && d.reg !== "principal") { openCfg.add(d.reg); render(); } }
+    else if (d.open) { await db.ref("controle/sites/" + d.open).update({ open: true, until: null }); toast("Liberado!"); }
+    else if (d.opent) { const h = +document.querySelector(`select[data-for="${d.opent}"]`).value; await db.ref("controle/sites/" + d.opent).update({ open: true, until: now() + h * 3600e3 }); toast(`Liberado por ${h}h`); }
+    else if (d.close) { await db.ref("controle/sites/" + d.close).update({ open: false, until: null }); toast("Bloqueado."); }
+    else if (d.cfg) { openCfg.has(d.cfg) ? openCfg.delete(d.cfg) : openCfg.add(d.cfg); render(); }
+    else if (d.save) { await db.ref("controle/sites/" + d.save + "/escrita").set(parseNodes(document.querySelector(`input[data-nodes="${d.save}"]`).value)); toast("Salvo!"); }
+    else if (d.unreg) { if (!confirm(`Descadastrar "${d.unreg}"? Ele fica bloqueado para todos (só ADM acessa).`)) return; await db.ref("controle/sites/" + d.unreg).remove(); }
+  } catch (err) { toast("Sem permissão: " + err.message, true); }
+});
+$("#bAddRepo").onclick = async () => {
+  const n = $("#inRepo").value.trim();
+  if (!/^[\w.-]+$/.test(n)) return toast("Digite o nome do repositório (como aparece na URL).", true);
+  try { await db.ref("controle/sites/" + n).set({ open: false, escrita: parseNodes(PRESETS[n] ?? ""), t: firebase.database.ServerValue.TIMESTAMP }); $("#inRepo").value = ""; openCfg.add(n); toast("Cadastrado (bloqueado). Confira as pastas em ⚙️."); checkProbe(n); }
+  catch (e) { toast("Erro: " + e.message, true); }
+};
+$("#bLockAll").onclick = async () => {
+  if (!confirm("Bloquear TODOS os sites agora?")) return;
+  const upd = {}; Object.keys(ctl).forEach((n) => { upd[n + "/open"] = false; upd[n + "/until"] = null; });
+  await db.ref("controle/sites").update(upd); toast("Todos bloqueados 🔒");
+};
+
+</script>
+</body>
+</html>
