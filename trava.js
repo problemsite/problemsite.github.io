@@ -6,7 +6,8 @@
      <script src="/trava.js" data-site="NOME_DO_REPO"></script>            (jogo)
      <script src="/trava.js" data-site="NOME_DO_REPO" data-modo="adm"></script> (ADM)
 
-   - jogo:  fecha a tela se o site estiver BLOQUEADO.
+   - jogo:  fecha a tela se o site estiver BLOQUEADO; se houver senha dos
+            jogadores (definida no painel), pede a senha antes de abrir.
    - adm:   só abre para navegadores liberados (ADM).
    - Quem é ADM vê tudo, mesmo bloqueado.
    A proteção de verdade fica nas REGRAS do Firebase; isto aqui é a tela.
@@ -44,6 +45,13 @@
   #trava-ov p{margin:0;font-family:"Nunito",system-ui,sans-serif;font-weight:900;font-size:18px;color:#0d4a93}
   #trava-ov small{font-family:"Nunito",system-ui,sans-serif;font-weight:800;font-size:14px;color:#145e86;opacity:.85}
   #trava-ov a{display:inline-block;margin-top:6px;background:#0d4a93;color:#fff;text-decoration:none;font-family:"Nunito",sans-serif;font-weight:900;padding:10px 18px;border-radius:12px}
+  #trava-ov form{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:4px}
+  #trava-ov input{font:900 20px "Nunito",system-ui,sans-serif;text-align:center;padding:12px 16px;border-radius:14px;border:3px solid #0d4a93;outline:none;width:240px;max-width:80vw;color:#0d4a93;background:#fff}
+  #trava-ov button{font:400 22px "Lilita One","Nunito",sans-serif;color:#fff;background:#0d4a93;border:0;border-radius:14px;padding:10px 28px;cursor:pointer;box-shadow:0 4px 0 #082f5e}
+  #trava-ov button:disabled{opacity:.6}
+  #trava-ov .err{min-height:20px;color:#b3002d}
+  #trava-ov .shake{animation:travaShake .35s}
+  @keyframes travaShake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
   #trava-tag{position:fixed;z-index:2147483001;left:50%;transform:translateX(-50%);top:8px;background:#0d4a93;color:#fff;font:900 12px "Nunito",system-ui,sans-serif;padding:5px 10px;border-radius:99px;opacity:.85;pointer-events:none;display:none}`;
   let ov, tag;
   function ensureUI() {
@@ -54,14 +62,39 @@
     const add = () => { document.body.appendChild(ov); document.body.appendChild(tag); };
     document.body ? add() : document.addEventListener("DOMContentLoaded", add);
   }
+  let ovKind = "";
   function showLock(kind) {
     ensureUI();
+    if (ovKind === "lock" && ov.classList.contains("on")) return;
+    ovKind = "lock";
     // mesma tela para jogo e ADM: não dá nenhuma pista de como liberar
     ov.innerHTML = `<div class="tb"><div class="hex">🔒</div><h2>Fechado no momento</h2><p>Este site está fechado agora.</p><small>Ele abre sozinho quando for liberado.</small></div>`;
     ov.classList.add("on");
     document.documentElement.style.overflow = "hidden";
   }
-  function hideLock() { if (ov) ov.classList.remove("on"); document.documentElement.style.overflow = ""; }
+  function hideLock() { if (ov) ov.classList.remove("on"); ovKind = ""; document.documentElement.style.overflow = ""; }
+  // tela da senha dos jogadores
+  let tryPass = null;
+  function showPass() {
+    ensureUI();
+    if (ovKind === "pass" && ov.classList.contains("on")) return;
+    ovKind = "pass";
+    ov.innerHTML = `<div class="tb"><div class="hex">🔑</div><h2>Senha</h2><form autocomplete="off"><input type="password" placeholder="••••••" aria-label="Senha"><button type="submit">Entrar</button><p class="err"></p></form></div>`;
+    ov.classList.add("on");
+    document.documentElement.style.overflow = "hidden";
+    const f = ov.querySelector("form"), inp = f.querySelector("input"), btn = f.querySelector("button"), err = f.querySelector(".err");
+    setTimeout(() => inp.focus(), 50);
+    f.onsubmit = async (e) => {
+      e.preventDefault();
+      const v = inp.value.trim(); if (!v || !tryPass) return;
+      btn.disabled = true; err.textContent = "";
+      const ok = await tryPass(v);
+      if (ok) { location.reload(); return; }
+      btn.disabled = false; inp.value = ""; inp.focus();
+      err.textContent = "Senha incorreta";
+      const tb = ov.querySelector(".tb"); tb.classList.remove("shake"); void tb.offsetWidth; tb.classList.add("shake");
+    };
+  }
   let tagShown = "";
   function showTag(txt) {
     ensureUI();
@@ -78,6 +111,8 @@
   setTimeout(() => { if (!decided) { reveal(); } }, 8000); // nunca prender a página por erro de rede
 
   let decided = false, admin = false, ctl = null, offset = 0, lockedState = null, listeners = [];
+  let senhaAtiva = false, senhaOk = true; // senha dos jogadores (só nos jogos)
+  const passNeeded = () => MODO !== "adm" && !admin && !!senhaAtiva && !senhaOk;
   const api = {
     site: SITE, modo: MODO, config: CONFIG,
     get admin() { return admin; },
@@ -97,13 +132,11 @@
   }
   let firstState = true;
   function apply() {
-    const open = computeOpen();
-    if (lockedState === null) lockedState = !open;
-    if (!open) {
-      showLock(MODO === "adm" ? "adm" : "jogo");
-      if (!firstState && lockedState === false) { /* acabou de fechar */ }
-      lockedState = true;
-    } else {
+    const open = computeOpen(), pass = open && passNeeded();
+    if (lockedState === null) lockedState = !open || pass;
+    if (!open) { showLock(MODO === "adm" ? "adm" : "jogo"); lockedState = true; }
+    else if (pass) { showPass(); lockedState = true; }
+    else {
       hideLock();
       // estava fechado e abriu: recarrega para os dados do site carregarem
       if (lockedState === true && !firstState) { location.reload(); return; }
@@ -128,8 +161,19 @@
     const db = firebase.database(), auth = firebase.auth();
     db.ref(".info/serverTimeOffset").on("value", (s) => { offset = s.val() || 0; });
 
+    // ---- senha dos jogadores ----
+    // "senhacheck" só pode ser lido por quem já digitou a senha atual (regras do Firebase)
+    const ensureUser = async () => auth.currentUser || (await auth.signInAnonymously()).user;
+    async function checkSenha() {
+      if (MODO === "adm" || admin || !senhaAtiva) { senhaOk = true; return; }
+      try { await ensureUser(); await db.ref("senhacheck").once("value"); senhaOk = true; } catch (e) { senhaOk = false; }
+    }
+    tryPass = async (v) => {
+      try { const u = await ensureUser(); await db.ref("acesso/" + u.uid).set(v); return true; } catch (e) { return false; }
+    };
+
     // é o navegador da equipe? (o e-mail fica só nas regras do Firebase)
-    let gotAuth = false, gotCtl = false;
+    let gotAuth = false, gotCtl = false, gotSenha = MODO === "adm";
     auth.onAuthStateChanged(async (u) => {
       let a = false;
       if (u && !u.isAnonymous) {
@@ -137,14 +181,24 @@
         try { await db.ref("admcheck").once("value"); a = true; } catch (e) { a = false; }
       }
       const changed = a !== admin; admin = a; gotAuth = true;
-      if (gotCtl && decided) { if (changed && MODO === "adm" && a) { location.reload(); return; } apply(); }
+      if (gotCtl && decided) { if (changed && MODO === "adm" && a) { location.reload(); return; } if (changed) await checkSenha(); apply(); }
     });
     if (SITE && MODO !== "adm") {
-      db.ref("controle/sites/" + SITE).on("value", (s) => { ctl = s.val() || {}; gotCtl = true; if (gotAuth) apply(); }, () => { ctl = {}; gotCtl = true; if (gotAuth) apply(); });
+      db.ref("controle/sites/" + SITE).on("value", async (s) => { ctl = s.val() || {}; gotCtl = true; if (gotAuth && decided) { if (computeOpen()) await checkSenha(); apply(); } }, () => { ctl = {}; gotCtl = true; if (gotAuth) apply(); });
     } else { ctl = {}; gotCtl = true; }
+    if (MODO !== "adm") {
+      db.ref("controle/senhaAtiva").on("value", async (s) => {
+        senhaAtiva = s.val() || false;
+        if (!gotSenha) { gotSenha = true; return; }
+        if (decided) { await checkSenha(); apply(); }
+      }, () => { gotSenha = true; });
+    }
     // espera o primeiro resultado
-    await new Promise((r) => { const t = setInterval(() => { if (gotAuth && gotCtl) { clearInterval(t); r(); } }, 30); });
+    await new Promise((r) => { const t = setInterval(() => { if (gotAuth && gotCtl && gotSenha) { clearInterval(t); r(); } }, 30); });
+    if (computeOpen()) await checkSenha();
     apply();
+    // senha trocada no painel: quem estava jogando volta para a tela da senha
+    if (MODO !== "adm") setInterval(async () => { if (senhaAtiva && senhaOk && !admin && computeOpen()) { await checkSenha(); if (!senhaOk) apply(); } }, 30000);
     // fecha sozinho quando o "liberado até" passar
     setInterval(() => { if (!admin && ctl && ctl.until) apply(); }, 5000);
     return { open: computeOpen(), admin };

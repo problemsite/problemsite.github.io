@@ -31,7 +31,7 @@ h1,h2,h3{font-family:"Lilita One",sans-serif;font-weight:400;margin:0}
 .card h2 small{font-family:"Nunito";font-size:13px;color:var(--soft);font-weight:800}
 .hint{color:var(--soft);font-size:13px;font-weight:800;line-height:1.45}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-input[type=email],input[type=text]{border:2px solid var(--line);border-radius:12px;padding:11px 13px;font-size:15px;font-weight:800;color:var(--text);outline:none;min-width:0}
+input[type=email],input[type=text],input[type=password]{border:2px solid var(--line);border-radius:12px;padding:11px 13px;font-size:15px;font-weight:800;color:var(--text);outline:none;min-width:0}
 input:focus{border-color:var(--blue)}
 /* login */
 .center{min-height:100vh;display:grid;place-items:center;padding:24px}
@@ -80,8 +80,9 @@ select{border:2px solid var(--line);border-radius:10px;padding:7px 8px;font-weig
 <!-- login -->
 <div class="center hide" id="vLogin"><div class="login card">
   <h2>Entrar</h2>
-  <input type="email" id="inMail" placeholder="e-mail" autocomplete="email">
-  <button class="btn" id="bSend">Enviar link</button>
+  <input type="email" id="inMail" placeholder="e-mail" autocomplete="username">
+  <input type="password" id="inPass" placeholder="senha" autocomplete="current-password">
+  <button class="btn" id="bSend">Entrar</button>
   <div class="msg" id="loginMsg"></div>
 </div></div>
 
@@ -104,6 +105,17 @@ select{border:2px solid var(--line);border-radius:10px;padding:7px 8px;font-weig
       <button class="btn sm" id="bAddRepo">＋ Cadastrar pelo nome</button>
     </div>
     <div class="sites" id="sites"></div>
+  </section>
+
+  <section class="card">
+    <h2>🔑 Senha dos jogadores <small id="passState"></small></h2>
+    <p class="hint">Com senha, quem abrir um site liberado (jogos e site principal) precisa digitá-la uma vez (o navegador lembra). Trocar a senha derruba quem entrou com a antiga. Navegadores da equipe não precisam.</p>
+    <div class="row" style="margin-top:12px">
+      <input type="text" id="inPlayerPass" placeholder="nova senha" autocomplete="off" style="width:220px">
+      <button class="btn ok" id="bSetPass">Salvar senha</button>
+      <button class="btn bad" id="bDelPass">Remover senha</button>
+      <span class="hint" id="curPass"></span>
+    </div>
   </section>
 
 </main>
@@ -141,34 +153,17 @@ const auth = firebase.auth(), db = firebase.database();
 let offset = 0; db.ref(".info/serverTimeOffset").on("value", (s) => (offset = s.val() || 0));
 const now = () => Date.now() + offset;
 
-// ---------- login por link no e-mail ----------
-(async () => {
-  if (auth.isSignInWithEmailLink(location.href)) {
-    let email = localStorage.getItem("central_email");
-    if (!email) email = prompt("Confirme o seu e-mail para entrar:");
-    try {
-      await auth.signInWithEmailLink(email, location.href);
-      localStorage.removeItem("central_email");
-    } catch (e) { toast("Link inválido.", true); }
-    history.replaceState(null, "", location.pathname);
-  }
-  auth.onAuthStateChanged(onUser);
-})();
-
+// ---------- login (e-mail + senha da equipe; nenhum e-mail é enviado) ----------
+auth.onAuthStateChanged(onUser);
 $("#bSend").onclick = async () => {
-  const email = $("#inMail").value.trim();
-  if (!/^\S+@\S+\.\S+$/.test(email)) { $("#loginMsg").className = "msg bad"; $("#loginMsg").textContent = "E-mail inválido."; return; }
-  $("#bSend").disabled = true;
-  try {
-    await auth.sendSignInLinkToEmail(email, { url: location.origin + location.pathname, handleCodeInApp: true });
-    localStorage.setItem("central_email", email);
-    $("#loginMsg").className = "msg ok"; $("#loginMsg").textContent = "Link enviado.";
-  } catch (e) {
-    $("#loginMsg").className = "msg bad"; $("#loginMsg").textContent = "Não foi possível enviar.";
-  }
+  const email = $("#inMail").value.trim().toLowerCase(), pass = $("#inPass").value;
+  if (!email || !pass) return;
+  $("#bSend").disabled = true; $("#loginMsg").textContent = "";
+  try { await auth.signInWithEmailAndPassword(email, pass); $("#inPass").value = ""; }
+  catch (e) { $("#loginMsg").className = "msg bad"; $("#loginMsg").textContent = "E-mail ou senha incorretos."; }
   $("#bSend").disabled = false;
 };
-$("#inMail").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#bSend").click(); });
+["#inMail", "#inPass"].forEach((id) => $(id).addEventListener("keydown", (e) => { if (e.key === "Enter") $("#bSend").click(); }));
 $("#bOut").onclick = async () => { await auth.signOut(); location.reload(); };
 
 let started = false;
@@ -187,6 +182,12 @@ async function onUser(u) {
 // ---------- painel ----------
 let ctl = {}, repos = [], probe = {}, openCfg = new Set();
 function startPanel(me) {
+  db.ref("segredo").on("value", (sn) => {
+    const v = sn.val();
+    $("#passState").textContent = v ? "· ativada" : "· sem senha (sites liberados abrem direto)";
+    $("#curPass").innerHTML = v ? `Atual: <b id="pv" style="filter:blur(4px);cursor:pointer" title="clique para ver">${esc(v)}</b>` : "";
+    const pv = $("#pv"); if (pv) pv.onclick = () => (pv.style.filter = pv.style.filter ? "" : "blur(4px)");
+  });
   db.ref("controle/sites").on("value", (s) => { ctl = s.val() || {}; render(); });
   loadRepos();
   setInterval(render, 15000); // atualiza o "liberado até"
@@ -268,6 +269,17 @@ $("#bAddRepo").onclick = async () => {
   const n = $("#inRepo").value.trim();
   if (!/^[\w.-]+$/.test(n)) return toast("Digite o nome do repositório (como aparece na URL).", true);
   try { await db.ref("controle/sites/" + n).set({ open: false, escrita: parseNodes(PRESETS[n] ?? ""), t: firebase.database.ServerValue.TIMESTAMP }); $("#inRepo").value = ""; openCfg.add(n); toast("Cadastrado (bloqueado). Confira as pastas em ⚙️."); checkProbe(n); }
+  catch (e) { toast("Erro: " + e.message, true); }
+};
+$("#bSetPass").onclick = async () => {
+  const v = $("#inPlayerPass").value.trim();
+  if (v.length < 4) return toast("Use pelo menos 4 caracteres.", true);
+  try { await db.ref("segredo").set(v); await db.ref("acesso").remove(); await db.ref("controle/senhaAtiva").set(Date.now()); $("#inPlayerPass").value = ""; toast("Senha salva! 🔑"); }
+  catch (e) { toast("Erro: " + e.message, true); }
+};
+$("#bDelPass").onclick = async () => {
+  if (!confirm("Remover a senha? Sites liberados vão abrir direto para qualquer um com o link.")) return;
+  try { await db.ref("segredo").remove(); await db.ref("controle/senhaAtiva").set(false); await db.ref("acesso").remove(); toast("Senha removida."); }
   catch (e) { toast("Erro: " + e.message, true); }
 };
 $("#bLockAll").onclick = async () => {
