@@ -124,7 +124,8 @@ a{color:inherit;text-decoration:none}
 .badge{position:absolute;top:38px;right:10px;z-index:2;font-family:"Lilita One",sans-serif;font-size:.9rem;color:#fff;
   background:#ff5c8a;padding:3px 10px;border-radius:999px;transform:rotate(4deg);box-shadow:0 3px 0 #c93665}
 
-.info{display:flex;align-items:center;gap:12px;padding:14px 16px 16px}
+.info{display:flex;align-items:flex-start;gap:12px;padding:14px 16px 16px}
+.info .icon{margin-top:2px}.info .go{margin-top:5px}
 .icon{flex:none;width:44px;height:48px;display:grid;place-items:center;font-size:1.4rem;
   font-family:"Lilita One",sans-serif;color:#fff;background:linear-gradient(var(--c1),var(--c2));
   clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
@@ -420,6 +421,28 @@ footer .mini{display:block;width:46px;margin:0 auto 6px}
     return "";
   }
 
+  // corta a sobra transparente do ícone e põe o desenho bem no meio (cada favicon vem com margens diferentes)
+  const centrados = {};
+  function centraliza(img){
+    if (centrados[img.src]) return centrados[img.src] === img.src ? "" : centrados[img.src];
+    try {
+      const N = 256, c = document.createElement("canvas"); c.width = c.height = N;
+      const x = c.getContext("2d", { willReadFrequently: true });
+      const r = Math.min(N / img.naturalWidth, N / img.naturalHeight) || 1;
+      const w = img.naturalWidth * r, h = img.naturalHeight * r;
+      x.drawImage(img, (N - w) / 2, (N - h) / 2, w, h);
+      const d = x.getImageData(0, 0, N, N).data;
+      let x0 = N, y0 = N, x1 = -1, y1 = -1;
+      for (let y = 0; y < N; y++) for (let i = 0; i < N; i++) if (d[(y * N + i) * 4 + 3] > 20) {
+        if (i < x0) x0 = i; if (i > x1) x1 = i; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+      if (x1 < 0) return "";
+      const bw = x1 - x0 + 1, bh = y1 - y0 + 1, lado = Math.max(bw, bh);
+      const o = document.createElement("canvas"); o.width = o.height = lado;
+      o.getContext("2d").drawImage(c, x0, y0, bw, bh, (lado - bw) / 2, (lado - bh) / 2, bw, bh);
+      const out = o.toDataURL("image/png"); centrados[out] = out; centrados[img.src] = out; return out;
+    } catch { centrados[img.src] = img.src; return ""; }   // ícone de outro site sem permissão: fica como está
+  }
+
   function paintIcons(){
     lista.querySelectorAll("[data-site]").forEach(async el => {
       const url = el.dataset.site;
@@ -433,6 +456,7 @@ footer .mini{display:block;width:46px;margin:0 auto 6px}
       if (src && !el.classList.contains("img")) {
         el.innerHTML = ""; const img = new Image(); img.alt = ""; img.src = src;
         img.onerror = () => { delete icons[url]; saveIcons(); };
+        img.onload = () => { const c = centraliza(img); if (c) { img.onload = null; img.src = c; } };
         el.appendChild(img); el.classList.add("img");
       }
     });
