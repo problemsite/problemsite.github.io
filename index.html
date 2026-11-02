@@ -32,7 +32,7 @@ a{color:inherit;text-decoration:none}
 .wrap{width:100%;max-width:1100px;margin:0 auto;padding-left:16px;padding-right:16px}
 
 /* ================= HERO ================= */
-.hero{position:relative;padding:34px 0 64px;text-align:center;overflow:hidden;
+.hero{position:relative;padding:26px 0 54px;text-align:center;overflow:hidden;
   background:radial-gradient(120% 80% at 50% 0%,#5ff6f6 0%,var(--cyan) 55%,var(--cyan-2) 100%)}
 .floaters span{position:absolute;width:var(--s);aspect-ratio:1/1.1;background:#fff;opacity:.16;
   clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);animation:drift var(--d) ease-in-out infinite alternate}
@@ -63,6 +63,38 @@ a{color:inherit;text-decoration:none}
 .search svg{flex:none;color:var(--soft)}
 .search input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-weight:700;font-size:1rem;color:var(--text)}
 .search input::placeholder{color:#90aeb4}
+
+/* filtro: Todos · Abertos agora · Fechados */
+.filtros{display:flex;gap:6px;padding:4px;background:#e3f7f9;border-radius:14px;width:max-content;max-width:100%;overflow-x:auto}
+.filtros button{border:0;background:none;cursor:pointer;font:inherit;font-weight:900;font-size:.92rem;color:var(--soft);
+  padding:8px 14px;border-radius:10px;white-space:nowrap;display:flex;align-items:center;gap:7px;transition:background .15s,color .15s}
+.filtros button b{font-size:.78rem;background:#fff;color:var(--soft);border-radius:99px;padding:1px 8px}
+@media (max-width:639px){.filtros{width:100%}.filtros button{flex:1;justify-content:center;padding:8px 6px}}
+.filtros button[aria-pressed="true"]{background:#fff;color:var(--blue-deep);box-shadow:0 2px 6px rgba(0,70,90,.12)}
+.filtros button[aria-pressed="true"] b{background:var(--sky);color:var(--blue-deep)}
+.dot{width:9px;height:9px;border-radius:50%;background:#20c27a;flex:none}
+.dot.off{background:#a9bfc4}
+
+/* seções */
+.secao{margin:6px 0 26px}
+.secao-cab{display:flex;align-items:center;gap:10px;margin:0 2px 14px}
+.secao-cab h3{margin:0;font-family:"Lilita One",sans-serif;font-weight:400;font-size:1.35rem;color:var(--blue-deep)}
+.secao-cab p{margin:0;font-weight:700;font-size:.88rem;color:var(--soft)}
+.secao-cab .dot{width:12px;height:12px;box-shadow:0 0 0 4px rgba(32,194,122,.18)}
+.secao-cab .dot.off{box-shadow:0 0 0 4px rgba(169,191,196,.25)}
+
+/* situação no card */
+.estado{position:absolute;top:38px;left:10px;z-index:2;display:flex;align-items:center;gap:6px;font-weight:900;font-size:.78rem;
+  padding:4px 10px;border-radius:999px;background:#fff;color:#11895a;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.estado.off{color:#5d7379}
+.fechado .shot{filter:grayscale(.85);opacity:.6}
+.fechado .icon{filter:grayscale(.8)}
+.fechado .go{background:linear-gradient(#c5d6da,#8ea7ad);box-shadow:0 3px 0 #6f878d}
+
+/* barra do ADM (só aparece para a conta da equipe) */
+.adm-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 18px;padding:10px 14px;border-radius:14px;
+  background:#e8f1ff;color:var(--blue-deep);font-weight:800;font-size:.9rem}
+.adm-bar a{margin-left:auto;background:var(--blue-deep);color:#fff;padding:7px 14px;border-radius:10px;font-weight:900}
 
 /* ================= CARDS DE SITE ================= */
 .grid{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;list-style:none;margin:0;padding:0}
@@ -129,9 +161,10 @@ footer .mini{display:block;width:46px;margin:0 auto 6px}
   .hero{padding:50px 0 80px}
   .hello{font-size:1.2rem}
   .sheet{padding-top:36px}
-  .sheet-head{flex-direction:row;align-items:center;justify-content:space-between}
+  .sheet-head{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between}
   .title{justify-content:flex-start}
   .search{width:320px}
+  .filtros{order:3;flex-basis:auto}
   .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
 }
 @media (min-width:980px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
@@ -164,24 +197,35 @@ footer .mini{display:block;width:46px;margin:0 auto 6px}
       </svg>
       <img class="logo" src="logo.svg" alt="Problems" width="500" height="125">
     </div>
-    <p class="hello">Oi! Aqui ficam <b>todos os meus sites</b>. Escolhe um e divirta-se!</p>
+    <p class="hello">Oi! Aqui ficam <b>todos os meus jogos</b>. Os <b>abertos</b> dá para jogar agora!</p>
   </div>
 </header>
 
 <main class="sheet">
   <div class="wrap">
+    <div class="adm-bar hidden" id="adm-bar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6Z"/><path d="m9 12 2 2 4-4"/></svg>
+      Você entrou como ADM: os sites fechados também abrem para você.
+      <a href="/central/">Abrir a Central</a>
+    </div>
+
     <div class="sheet-head">
       <div class="title">
-        <h2>Meus sites</h2>
+        <h2>Meus jogos</h2>
         <span class="pill" id="count" aria-live="polite">carregando…</span>
       </div>
       <label class="search">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.5-4.5"/></svg>
-        <input id="q" type="search" placeholder="Procurar um site…" autocomplete="off" aria-label="Procurar um site">
+        <input id="q" type="search" placeholder="Procurar um jogo…" autocomplete="off" aria-label="Procurar um jogo">
       </label>
+      <div class="filtros" id="filtros" role="group" aria-label="Mostrar">
+        <button type="button" data-f="todos" aria-pressed="true">Todos <b id="n-todos">0</b></button>
+        <button type="button" data-f="abertos" aria-pressed="false"><span class="dot"></span>Abertos <b id="n-abertos">0</b></button>
+        <button type="button" data-f="fechados" aria-pressed="false"><span class="dot off"></span>Fechados <b id="n-fechados">0</b></button>
+      </div>
     </div>
 
-    <ul class="grid" id="grid" aria-busy="true"></ul>
+    <div id="lista" aria-busy="true"><ul class="grid" id="grid"></ul></div>
 
     <div class="state hidden" id="state">
       <svg viewBox="0 0 300 330" aria-hidden="true"><use href="#problems"/></svg>
@@ -206,8 +250,32 @@ footer .mini{display:block;width:46px;margin:0 auto 6px}
   const PALETTES = [["#6fd3f7","#2a86d6"],["#7ef0c9","#15b39a"],["#ffb86b","#ff7a59"],["#c7a4ff","#7b5cf0"],["#ff9ec4","#f0567f"],["#ffe066","#f4a700"]];
 
   const $ = id => document.getElementById(id);
-  const grid = $("grid"), q = $("q"), count = $("count");
-  let sites = [];
+  const grid = $("grid"), lista = $("lista"), q = $("q"), count = $("count");
+  let sites = [], filtro = "todos", falhou = false;
+
+  // ---------- aberto/fechado: lê a Central (controle/sites é público, só leitura) ----------
+  const CONTROLE = "https://jogos-github-default-rtdb.firebaseio.com/controle/sites.json";
+  let ctl = null;
+  async function lerControle(){
+    try { const r = await fetch(CONTROLE, { cache: "no-store" }); if (r.ok) { const v = await r.json() || {}; if (JSON.stringify(v) !== JSON.stringify(ctl)) { ctl = v; if (sites.length) render(); } } } catch {}
+  }
+  // site sem cadastro na Central não tem trava = sempre aberto
+  const aberto = s => { const c = ctl && ctl[s.name]; if (!c) return true; return c.open === true && (!c.until || c.until > Date.now()); };
+  const ateQuando = s => { const c = ctl && ctl[s.name]; return c && c.open === true && c.until ? new Date(c.until).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : ""; };
+  setInterval(() => { if (!document.hidden) lerControle(); }, 60000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) lerControle(); });
+
+  $("filtros").addEventListener("click", e => {
+    const b = e.target.closest("button[data-f]"); if (!b) return;
+    filtro = b.dataset.f;
+    $("filtros").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+    render();
+  });
+
+  // ADM: mostra o atalho para a Central
+  const mostraAdm = a => $("adm-bar").classList.toggle("hidden", !a);
+  const ligaTrava = () => { if (!window.Trava) return; window.Trava.onChange(st => mostraAdm(st && st.admin)); if (window.Trava.ready) window.Trava.ready.then(() => mostraAdm(window.Trava.admin)).catch(() => {}); };
+  ligaTrava();
 
   const cache = {
     get(){ try { return JSON.parse(localStorage.getItem(CACHE_KEY)); } catch { return null; } },
@@ -269,9 +337,14 @@ footer .mini{display:block;width:46px;margin:0 auto 6px}
     const isNew = (Date.now() - new Date(s.pushed)) / 864e5 < NEW_DAYS;
     const domain = s.url.replace(/^https?:\/\//, "").replace(/\/$/, "");
     const icon = s.emoji || esc(s.title.charAt(0));
+    const ab = aberto(s), ate = ateQuando(s);
+    const estado = !ctl ? "" : ab
+      ? `<span class="estado"><span class="dot"></span>Aberto${ate ? " até " + ate : ""}</span>`
+      : `<span class="estado off"><span class="dot off"></span>Fechado</span>`;
     return `
       <li>
-        <a class="site" href="${esc(s.url)}" style="--i:${i};--c1:${c1};--c2:${c2}">
+        <a class="site${ctl && !ab ? " fechado" : ""}" href="${esc(s.url)}" style="--i:${i};--c1:${c1};--c2:${c2}">
+          ${estado}
           <div class="window">
             <div class="bar"><i></i><i></i><i></i><em>${esc(domain)}</em></div>
             <div class="shot">
@@ -348,7 +421,7 @@ footer .mini{display:block;width:46px;margin:0 auto 6px}
   }
 
   function paintIcons(){
-    grid.querySelectorAll("[data-site]").forEach(async el => {
+    lista.querySelectorAll("[data-site]").forEach(async el => {
       const url = el.dataset.site;
       const c = icons[url];
       if (!c || Date.now() - c.ts > 864e5) {                                         // revalida 1x por dia
@@ -372,14 +445,34 @@ footer .mini{display:block;width:46px;margin:0 auto 6px}
 
   function render(){
     const t = q.value.trim().toLowerCase();
-    const list = t ? sites.filter(s => `${s.title} ${s.name} ${s.desc}`.toLowerCase().includes(t)) : sites;
-    count.textContent = sites.length === 1 ? "1 site no ar" : `${sites.length} sites no ar`;
-    grid.innerHTML = list.map(card).join("");
-    grid.setAttribute("aria-busy", "false");
+    const achou = t ? sites.filter(s => `${s.title} ${s.name} ${s.desc}`.toLowerCase().includes(t)) : sites;
+    const abertos = achou.filter(aberto), fechados = achou.filter(s => !aberto(s));
+    const nAb = sites.filter(aberto).length;
+    count.textContent = !ctl ? (sites.length === 1 ? "1 jogo" : `${sites.length} jogos`) : nAb === 1 ? "1 aberto agora" : `${nAb} abertos agora`;
+    $("n-todos").textContent = achou.length; $("n-abertos").textContent = abertos.length; $("n-fechados").textContent = fechados.length;
+    $("filtros").classList.toggle("hidden", !ctl);
+
+    let i = 0;
+    const secao = (titulo, dica, off, l) => !l.length ? "" : `
+      <section class="secao">
+        <div class="secao-cab"><span class="dot${off ? " off" : ""}"></span><div><h3>${titulo}</h3><p>${dica}</p></div></div>
+        <ul class="grid">${l.map(s => card(s, i++)).join("")}</ul>
+      </section>`;
+    let html = "", vazio = false;
+    if (!ctl) html = `<ul class="grid">${achou.map(s => card(s, i++)).join("")}</ul>`, vazio = !achou.length;
+    else {
+      if (filtro !== "fechados") html += secao("Abertos agora", "Clique e jogue.", false, abertos);
+      if (filtro !== "abertos") html += secao("Fechados no momento", "Eles abrem quando forem liberados.", true, fechados);
+      vazio = filtro === "abertos" ? !abertos.length : filtro === "fechados" ? !fechados.length : !achou.length;
+    }
+    lista.innerHTML = html;
+    lista.setAttribute("aria-busy", "false");
     $("state").classList.add("hidden");
-    if (!sites.length) showState("Em breve!", "Ainda não tem nenhum site publicado. Volta daqui a pouco!");
-    else if (!list.length) showState("Nada por aqui…", "Nenhum site com esse nome.");
-    grid.querySelectorAll("iframe").forEach(f => io ? io.observe(f) : (f.src = f.dataset.src));
+    if (!sites.length && falhou) showState("Deu um problema!", "Não consegui carregar a lista agora. Tenta recarregar a página.");
+    else if (!sites.length) showState("Em breve!", "Ainda não tem nenhum jogo publicado. Volta daqui a pouco!");
+    else if (vazio && t) showState("Nada por aqui…", "Nenhum jogo com esse nome.");
+    else if (vazio) showState(filtro === "abertos" ? "Nenhum aberto agora" : "Nenhum fechado", filtro === "abertos" ? "Volta mais tarde: os jogos abrem quando forem liberados." : "Todos os jogos estão abertos!");
+    lista.querySelectorAll("iframe").forEach(f => io ? io.observe(f) : (f.src = f.dataset.src));
     paintIcons();
   }
 
@@ -399,7 +492,7 @@ footer .mini{display:block;width:46px;margin:0 auto 6px}
       if (JSON.stringify(fresh) !== JSON.stringify(sites) || !c) { sites = fresh; render(); }
     } catch (e) {
       if (!c) {
-        grid.innerHTML = ""; count.textContent = "ops!";
+        falhou = true; lista.innerHTML = ""; count.textContent = "ops!";
         showState("Deu um problema!", e.message === "limite"
           ? "Muita gente visitou ao mesmo tempo. Espera um minutinho e recarrega a página."
           : "Não consegui carregar a lista agora. Tenta recarregar a página.");
@@ -408,6 +501,7 @@ footer .mini{display:block;width:46px;margin:0 auto 6px}
   }
 
   q.addEventListener("input", render);
+  lerControle();
   load();
 })();
 </script>
