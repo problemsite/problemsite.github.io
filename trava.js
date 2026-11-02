@@ -67,8 +67,17 @@
     ensureUI();
     if (ovKind === "lock" && ov.classList.contains("on")) return;
     ovKind = "lock";
-    // mesma tela para jogo e ADM: não dá nenhuma pista de como liberar
-    ov.innerHTML = `<div class="tb"><div class="hex">🔒</div><h2>Fechado no momento</h2><p>Este site está fechado agora.</p><small>Ele abre sozinho quando for liberado.</small></div>`;
+    // jogo: não dá nenhuma pista de como liberar. ADM: só abre com o login do Google da equipe (sem senha para tentarem adivinhar)
+    ov.innerHTML = kind === "adm"
+      ? `<div class="tb"><div class="hex">🔒</div><h2>ADM</h2><p>Entre com a conta da equipe.</p><button type="button" class="tv-g">Entrar com Google</button><p class="err"></p></div>`
+      : `<div class="tb"><div class="hex">🔒</div><h2>Fechado no momento</h2><p>Este site está fechado agora.</p><small>Ele abre sozinho quando for liberado.</small></div>`;
+    const bg = ov.querySelector(".tv-g");
+    if (bg) bg.onclick = async () => {
+      bg.disabled = true; ov.querySelector(".err").textContent = "";
+      try { const p = new firebase.auth.GoogleAuthProvider(); p.setCustomParameters({ prompt: "select_account" }); await firebase.auth().signInWithPopup(p); }
+      catch (e) { if (!/popup-closed|cancelled-popup/.test(e.code || "")) ov.querySelector(".err").textContent = "Não deu para entrar. Tente de novo."; }
+      bg.disabled = false;
+    };
     ov.classList.add("on");
     document.documentElement.style.overflow = "hidden";
   }
@@ -179,6 +188,11 @@
       if (u && !u.isAnonymous) {
         // só o e-mail da equipe (definido nas regras do Firebase) consegue ler "admcheck"
         try { await db.ref("admcheck").once("value"); a = true; } catch (e) { a = false; }
+        if (!a && MODO === "adm" && u.providerData.some((p) => p.providerId === "google.com")) { // entrou com outra conta Google: sai e avisa
+          try { await auth.signOut(); } catch (e) {}
+          setTimeout(() => { const er = ov && ov.querySelector(".err"); if (er) er.textContent = "Essa conta Google não tem acesso."; }, 50);
+          return;
+        }
       }
       const changed = a !== admin; admin = a; gotAuth = true;
       if (gotCtl && decided) { if (changed && MODO === "adm" && a) { location.reload(); return; } if (changed) await checkSenha(); apply(); }
