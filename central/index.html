@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Entrar</title>
+<title>Central dos Sites</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#00e8e8">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230d4a93'/%3E%3Cpath d='M50 12 84 31v38L50 88 16 69V31Z' fill='%2300e8e8' stroke='%23fff' stroke-width='6' stroke-linejoin='round'/%3E%3Crect x='38' y='46' width='24' height='20' rx='4' fill='%23fff'/%3E%3Cpath d='M42 46v-6a8 8 0 0 1 16 0v6' fill='none' stroke='%23fff' stroke-width='5'/%3E%3C/svg%3E">
@@ -11,66 +11,92 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--cyan:#00e8e8;--cyan2:#00c6d6;--blue:#2a86d6;--deep:#0d4a93;--paper:#f4feff;--card:#fff;--text:#123a44;--soft:#5d8189;--line:#cdeef3;--ok:#13b26b;--okbg:#e2fbef;--bad:#e0425f;--badbg:#ffe9ee;--warn:#d58b00;--warnbg:#fff4da}
+:root{--cyan:#00e8e8;--cyan2:#00c6d6;--blue:#2a86d6;--deep:#0d4a93;--paper:#f3fbfc;--card:#fff;--text:#123a44;--soft:#5d8189;--line:#d9eef2;--ok:#11a865;--okbg:#e2fbef;--bad:#e0425f;--badbg:#ffe9ee;--warn:#b77700;--warnbg:#fff4da}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;font-family:"Nunito",system-ui,sans-serif;color:var(--text);background:var(--paper)}
 button,input,select{font-family:inherit}
 h1,h2,h3{font-family:"Lilita One",sans-serif;font-weight:400;margin:0}
-.top{background:radial-gradient(120% 90% at 50% 0%,#5ff6f6 0%,var(--cyan) 55%,var(--cyan2) 100%);padding:22px 20px 26px;color:#fff;position:relative;overflow:hidden}
-.top .in{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.top h1{font-size:34px;text-shadow:0 3px 0 var(--deep)}
+svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.top{background:radial-gradient(120% 90% at 50% 0%,#5ff6f6 0%,var(--cyan) 55%,var(--cyan2) 100%);padding:18px 18px 20px;color:#fff}
+.top .in{max-width:1000px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.top h1{font-size:30px;text-shadow:0 3px 0 var(--deep)}
+.top .sub{font-weight:900;color:var(--deep);font-size:13px;opacity:.8}
 .top .who{margin-left:auto;display:flex;align-items:center;gap:10px;font-weight:900;color:var(--deep);font-size:14px}
-.hexi{width:46px;height:51px;background:#fff;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:grid;place-items:center;font-size:22px}
-.btn{border:0;cursor:pointer;border-radius:12px;padding:10px 16px;font-weight:900;font-size:14px;background:var(--deep);color:#fff;box-shadow:0 3px 0 rgba(0,0,0,.18);transition:transform .1s,filter .15s;white-space:nowrap}
-.btn:hover{filter:brightness(1.1)}.btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.hexi{width:44px;height:49px;background:#fff;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:grid;place-items:center;color:var(--deep)}
+.hexi svg.i{width:22px;height:22px}
+.btn{border:0;cursor:pointer;border-radius:11px;padding:9px 14px;font-weight:900;font-size:14px;background:var(--deep);color:#fff;box-shadow:0 2px 0 rgba(0,0,0,.18);transition:transform .1s,filter .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
+.btn:hover{filter:brightness(1.1)}.btn:active{transform:translateY(1px);box-shadow:none}
 .btn:disabled{opacity:.45;cursor:not-allowed}
-.btn.ok{background:var(--ok)}.btn.bad{background:var(--bad)}.btn.ghost{background:#fff;color:var(--deep);box-shadow:inset 0 0 0 2px var(--line)}.btn.sm{padding:7px 11px;font-size:13px;border-radius:10px}
-.wrap{max-width:1080px;margin:0 auto;padding:22px 18px 70px;display:flex;flex-direction:column;gap:18px}
-.card{background:var(--card);border-radius:18px;box-shadow:0 6px 22px rgba(13,74,147,.08);border:2px solid var(--line);padding:18px}
-.card h2{font-size:24px;color:var(--deep);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.card h2 small{font-family:"Nunito";font-size:13px;color:var(--soft);font-weight:800}
-.hint{color:var(--soft);font-size:13px;font-weight:800;line-height:1.45}
+.btn.ok{background:var(--ok)}.btn.bad{background:var(--bad)}.btn.ghost{background:#fff;color:var(--deep);box-shadow:inset 0 0 0 2px var(--line)}.btn.sm{padding:6px 10px;font-size:13px;border-radius:9px}
+.btn.icon{padding:7px;border-radius:9px}
+.wrap{max-width:1000px;margin:0 auto;padding:20px 16px 70px;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--card);border-radius:18px;box-shadow:0 4px 18px rgba(13,74,147,.06);border:1px solid var(--line);padding:18px}
+.card h2{font-size:22px;color:var(--deep);display:flex;align-items:center;gap:9px}
+.hint{color:var(--soft);font-size:13px;font-weight:700;line-height:1.5;margin:6px 0 0}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-input[type=email],input[type=text],input[type=password]{border:2px solid var(--line);border-radius:12px;padding:11px 13px;font-size:15px;font-weight:800;color:var(--text);outline:none;min-width:0}
+input[type=text]{border:2px solid var(--line);border-radius:11px;padding:9px 12px;font-size:14px;font-weight:800;color:var(--text);outline:none;min-width:0;background:#fff}
 input:focus{border-color:var(--blue)}
 /* login */
 .center{min-height:100vh;display:grid;place-items:center;padding:24px}
-.login{width:360px;max-width:100%;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
-.login .big{width:96px;height:106px;font-size:44px}
-.login input{width:100%;text-align:center}
+.login{width:360px;max-width:100%;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
+.login .hexi{width:84px;height:93px}.login .hexi svg.i{width:36px;height:36px}
+.login h2{font-size:28px;color:var(--deep)}
 .msg{font-weight:900;font-size:14px;min-height:20px}
 .msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
-.uidbox{background:#f2fbfd;border:2px dashed var(--line);border-radius:12px;padding:10px 12px;font-family:ui-monospace,Consolas,monospace;font-size:14px;word-break:break-all;font-weight:700}
-/* sites */
-.sites{display:flex;flex-direction:column;gap:10px;margin-top:14px}
-.site{display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(170px,1fr) auto;gap:12px;align-items:center;border:2px solid var(--line);border-radius:14px;padding:12px 14px;background:#fbffff}
-.site.open{border-color:#9be7c3;background:#f3fff9}
-.site.closed{border-color:#ffd0da;background:#fffafb}
-.site .nm{font-family:"Lilita One";font-size:19px;color:var(--deep);line-height:1.1}
-.site .meta{font-size:12px;color:var(--soft);font-weight:800;display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
-.site .meta a{color:var(--blue);text-decoration:none}
-.pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:5px 11px;font-weight:900;font-size:13px;white-space:nowrap}
-.pill.ok{background:var(--okbg);color:var(--ok)}.pill.bad{background:var(--badbg);color:var(--bad)}.pill.warn{background:var(--warnbg);color:var(--warn)}.pill.mut{background:#eef6f8;color:var(--soft)}
-.acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
-select{border:2px solid var(--line);border-radius:10px;padding:7px 8px;font-weight:900;color:var(--deep);background:#fff}
-.cfg{grid-column:1/-1;display:none;gap:8px;align-items:center;flex-wrap:wrap;border-top:2px dashed var(--line);padding-top:10px;margin-top:2px}
+/* resumo */
+.resumo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.num{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.num b{font-family:"Lilita One";font-size:30px;line-height:1;color:var(--deep)}
+.num span{font-weight:800;font-size:13px;color:var(--soft);line-height:1.3}
+.num .bola{width:12px;height:12px;border-radius:50%;flex:none}
+/* barra de ferramentas da lista */
+.barra{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.busca{flex:1;min-width:180px;display:flex;align-items:center;gap:8px;border:2px solid var(--line);border-radius:11px;padding:0 10px;background:#fff;color:var(--soft)}
+.busca:focus-within{border-color:var(--blue)}
+.busca input{border:0;padding:9px 0;flex:1}
+/* lista dos sites */
+.grupo{margin-top:18px}
+.grupo h3{font-family:"Nunito";font-weight:900;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);display:flex;align-items:center;gap:8px;margin:0 0 8px 2px}
+.bola{display:inline-block;width:10px;height:10px;border-radius:50%;background:#a9bfc4}
+.bola.ok{background:#20c27a}.bola.bad{background:#a9bfc4}.bola.warn{background:#f0b429}
+.sites{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+.site{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
+.site:first-child{border-top:0}
+.site .nm{font-weight:900;font-size:16px;color:var(--deep);line-height:1.2;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.site .meta{font-size:12.5px;color:var(--soft);font-weight:800;display:flex;gap:12px;flex-wrap:wrap;margin-top:4px;align-items:center}
+.site .meta a{color:var(--blue);text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.site .meta a:hover{text-decoration:underline}
+.site .meta svg.i{width:14px;height:14px}
+.aviso{color:var(--warn)}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:3px 10px;font-weight:900;font-size:12px;white-space:nowrap}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.bad{background:#eef3f5;color:var(--soft)}.pill.warn{background:var(--warnbg);color:var(--warn)}
+.acts{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+/* chave liga/desliga */
+.chave{position:relative;width:52px;height:30px;border-radius:99px;border:0;cursor:pointer;background:#c9d8dc;transition:background .2s;flex:none}
+.chave::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+.chave[aria-checked="true"]{background:var(--ok)}
+.chave[aria-checked="true"]::after{transform:translateX(22px)}
+.chave:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.tempo{border:2px solid var(--line);border-radius:9px;padding:5px 6px;font-weight:900;font-size:13px;color:var(--deep);background:#fff;cursor:pointer}
+.cfg{grid-column:1/-1;display:none;gap:8px;align-items:center;flex-wrap:wrap;background:#f6fbfc;border-radius:12px;padding:10px 12px}
 .site.cfgon .cfg{display:flex}
-.cfg input{flex:1;min-width:220px;font-size:13px;padding:8px 10px}
-.list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
-.li{display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-radius:12px;padding:9px 12px;flex-wrap:wrap}
-.li .t{flex:1;min-width:0;font-weight:900;overflow:hidden;text-overflow:ellipsis}
-.li .t small{display:block;color:var(--soft);font-weight:800;font-family:ui-monospace,Consolas,monospace;font-size:11px}
+.cfg .hint{margin:0;flex-basis:100%}
+.cfg input{flex:1;min-width:200px;font-size:13px;padding:7px 10px}
+.vazio{padding:18px;text-align:center;color:var(--soft);font-weight:800}
+/* senha */
+.senha-est{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
 #toast{position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none}
 .t1{background:var(--deep);color:#fff;font-weight:900;padding:10px 16px;border-radius:99px;box-shadow:0 6px 18px rgba(0,0,0,.2);animation:tin .3s}
 .t1.bad{background:var(--bad)}
 @keyframes tin{from{transform:translateY(-12px);opacity:0}}
 .hide{display:none!important}
-@media (max-width:760px){.site{grid-template-columns:1fr}.acts{justify-content:flex-start}}
+@media (max-width:640px){.resumo{gap:8px}.num{flex-direction:column;align-items:flex-start;gap:4px;padding:10px 12px}.num span br{display:none}.num b{font-size:24px}.acts{flex-direction:column-reverse;align-items:flex-end;gap:6px}.top h1{font-size:24px}.wrap{padding:14px 12px 60px}.card{padding:14px}}
 </style>
 </head>
 <body>
 <header class="top hide" id="topBar"><div class="in">
-  <div class="hexi">🔐</div><h1>Central dos Sites</h1>
+  <div class="hexi"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+  <div><h1>Central dos Sites</h1><div class="sub">Abra e feche os jogos para o público</div></div>
   <div class="who hide" id="who"><span id="whoMail"></span><button class="btn ghost sm" id="bOut">Sair</button></div>
 </div></header>
 
@@ -79,8 +105,10 @@ select{border:2px solid var(--line);border-radius:10px;padding:7px 8px;font-weig
 
 <!-- login -->
 <div class="center hide" id="vLogin"><div class="login card">
-  <h2>Entrar</h2>
-  <button class="btn" id="bSend">Entrar com Google</button>
+  <div class="hexi"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+  <h2>Central dos Sites</h2>
+  <p class="hint">Só a conta Google da equipe entra aqui.</p>
+  <button class="btn" id="bSend"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12.2c0-.6-.1-1.2-.2-1.7H12v3.3h4.5a3.9 3.9 0 0 1-1.7 2.5v2h2.7c1.6-1.4 2.5-3.6 2.5-6.1Z"/><path d="M12 20c2.3 0 4.2-.8 5.5-2.1l-2.7-2a4.9 4.9 0 0 1-7.3-2.6H4.7v2.1A8 8 0 0 0 12 20Z"/><path d="M7.5 13.3a4.8 4.8 0 0 1 0-3.1V8.1H4.7a8 8 0 0 0 0 7.3Z"/><path d="M12 7.2c1.3 0 2.4.4 3.3 1.3l2.4-2.4A8 8 0 0 0 4.7 8.1l2.8 2.1A4.8 4.8 0 0 1 12 7.2Z"/></svg>Entrar com Google</button>
   <div class="msg" id="loginMsg"></div>
 </div></div>
 
@@ -92,30 +120,42 @@ select{border:2px solid var(--line);border-radius:10px;padding:7px 8px;font-weig
 
 <!-- painel -->
 <main class="wrap hide" id="vPanel">
+  <div class="resumo">
+    <div class="num"><span class="bola ok"></span><b id="nAb">0</b><span>abertos <br>para o público</span></div>
+    <div class="num"><span class="bola bad"></span><b id="nFe">0</b><span>fechados <br>(só o ADM entra)</span></div>
+    <div class="num"><span class="bola" id="bolaSenha"></span><b id="nSenha">–</b><span id="txtSenha">senha dos <br>jogadores</span></div>
+  </div>
+
   <section class="card">
-    <h2>🌐 Sites <small id="countTxt"></small></h2>
-    <p class="hint">Liberado = qualquer pessoa com o link pode jogar. Bloqueado = tela "fechado" e o Firebase recusa tudo. Navegadores liberados (que entraram com o e-mail da equipe) sempre veem tudo e abrem os ADMs.</p>
-    <div class="row" style="margin-top:12px">
-      <button class="btn bad" id="bLockAll">🔒 Bloquear todos</button>
-      <button class="btn ghost" id="bRefresh">↻ Atualizar lista</button>
-      <span style="flex:1"></span>
-      <input type="text" id="inRepo" placeholder="nome_do_repositorio" style="width:200px;padding:8px 10px;font-size:13px">
-      <button class="btn sm" id="bAddRepo">＋ Cadastrar pelo nome</button>
+    <h2>Jogos</h2>
+    <p class="hint"><b>Aberto</b>: qualquer pessoa com o link joga (com a senha dos jogadores, se estiver ligada). <b>Fechado</b>: aparece a tela "Fechado no momento". Você (ADM) sempre entra em tudo, inclusive nos ADMs dos jogos.</p>
+    <div class="barra">
+      <label class="busca"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/></svg><input type="text" id="inBusca" placeholder="Procurar…" autocomplete="off"></label>
+      <button class="btn ghost" id="bRefresh" title="Conferir de novo a lista e as travas"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>Atualizar</button>
+      <button class="btn bad" id="bLockAll"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Fechar todos</button>
     </div>
-    <div class="sites" id="sites"></div>
+    <div id="sites"></div>
   </section>
 
   <section class="card">
-    <h2>🔑 Senha dos jogadores <small id="passState"></small></h2>
-    <p class="hint">Com senha, quem abrir um site liberado (jogos e site principal) precisa digitá-la uma vez (o navegador lembra). Trocar a senha derruba quem entrou com a antiga. Navegadores da equipe não precisam.</p>
+    <h2><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m10.7 12.3 9.3-9.3M16 7l3 3M13.5 9.5l2 2"/></svg>Senha dos jogadores</h2>
+    <p class="hint">Ligada: quem abre um jogo aberto digita a senha uma vez (o navegador lembra). Trocar a senha faz todo mundo digitar a nova. O ADM não precisa de senha.</p>
+    <div class="senha-est"><span class="pill" id="passState"></span><span class="hint" id="curPass" style="margin:0"></span></div>
     <div class="row" style="margin-top:12px">
       <input type="text" id="inPlayerPass" placeholder="nova senha" autocomplete="off" style="width:220px">
       <button class="btn ok" id="bSetPass">Salvar senha</button>
-      <button class="btn bad" id="bDelPass">Remover senha</button>
-      <span class="hint" id="curPass"></span>
+      <button class="btn ghost" id="bDelPass">Desligar a senha</button>
     </div>
   </section>
 
+  <section class="card">
+    <h2>Cadastrar um jogo novo</h2>
+    <p class="hint">Jogos novos do GitHub já aparecem na lista em "Sem cadastro". Se não aparecer, digite o nome do repositório.</p>
+    <div class="row" style="margin-top:12px">
+      <input type="text" id="inRepo" placeholder="nome_do_repositorio" style="width:240px">
+      <button class="btn" id="bAddRepo">Cadastrar</button>
+    </div>
+  </section>
 </main>
 
 <div id="toast"></div>
@@ -181,9 +221,13 @@ let ctl = {}, repos = [], probe = {}, openCfg = new Set();
 function startPanel(me) {
   db.ref("segredo").on("value", (sn) => {
     const v = sn.val();
-    $("#passState").textContent = v ? "· ativada" : "· sem senha (sites liberados abrem direto)";
-    $("#curPass").innerHTML = v ? `Atual: <b id="pv" style="filter:blur(4px);cursor:pointer" title="clique para ver">${esc(v)}</b>` : "";
-    const pv = $("#pv"); if (pv) pv.onclick = () => (pv.style.filter = pv.style.filter ? "" : "blur(4px)");
+    $("#passState").className = "pill " + (v ? "ok" : "bad");
+    $("#passState").textContent = v ? "Ligada" : "Desligada: os jogos abertos entram direto";
+    $("#nSenha").textContent = v ? "Sim" : "Não"; $("#bolaSenha").className = "bola " + (v ? "ok" : "bad");
+    $("#txtSenha").innerHTML = v ? "senha dos <br>jogadores ligada" : "senha dos <br>jogadores desligada";
+    $("#bDelPass").classList.toggle("hide", !v);
+    $("#curPass").innerHTML = v ? `Senha atual: <b id="pv" style="filter:blur(5px);cursor:pointer" title="Clique para ver">${esc(v)}</b>` : "";
+    const pv = $("#pv"); if (pv) pv.onclick = () => (pv.style.filter = pv.style.filter ? "" : "blur(5px)");
   });
   db.ref("controle/sites").on("value", (s) => { ctl = s.val() || {}; render(); });
   loadRepos();
@@ -217,72 +261,81 @@ const isOpen = (c) => !!(c && c.open === true && (!c.until || c.until > now()));
 const fmtT = (t) => new Date(t).toLocaleString("pt-BR", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" });
 const nodesTxt = (c, name) => c && c.escrita ? Object.keys(c.escrita).join(", ") : (PRESETS[name] ?? "");
 
+const SMALL = new Set(["de","do","da","dos","das","e","o","a","em","no","na","com"]);
+const bonito = (n) => n === "principal" ? "Página principal (menu)" : n.replace(/[-_.]+/g, " ").trim().split(/\s+/).map((w, i) => (i && SMALL.has(w.toLowerCase())) ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+const IC = { abre: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>', adm: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6Z"/></svg>', eng: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>' };
+$("#inBusca").addEventListener("input", () => render());
 function render() {
   const names = Array.from(new Set(["principal"].concat(Object.keys(ctl), Object.keys(PRESETS), repos)));
   const reg = names.filter((n) => ctl[n]), unreg = names.filter((n) => !ctl[n]);
-  $("#countTxt").textContent = `${reg.length} com trava · ${unreg.length} sem cadastro`;
+  const t = $("#inBusca").value.trim().toLowerCase();
+  const vis = (n) => !t || (n + " " + bonito(n)).toLowerCase().includes(t);
+  const ab = reg.filter((n) => isOpen(ctl[n])), fe = reg.filter((n) => !isOpen(ctl[n]));
+  $("#nAb").textContent = ab.length; $("#nFe").textContent = fe.length;
+  const ordem = (a, b) => a === "principal" ? -1 : b === "principal" ? 1 : bonito(a).localeCompare(bonito(b), "pt-BR");
   const row = (name) => {
     if (!probe[name] && name !== "principal") setTimeout(() => checkProbe(name), 0);
     const c = ctl[name], p = probe[name] || { loading: true }, open = isOpen(c), isMain = name === "principal";
     const url = isMain ? "/" : `/${name}/`;
-    let pill;
-    if (!c) pill = `<span class="pill warn">⚠️ Não cadastrado</span>`;
-    else if (open) pill = `<span class="pill ok">🔓 Liberado${c.until ? " até " + fmtT(c.until) : ""}</span>`;
-    else pill = `<span class="pill bad">🔒 Bloqueado</span>`;
-    const tr = isMain ? "" : p.loading ? `<span>verificando…</span>` : p.online === false ? `<span>site fora do ar</span>`
-      : `<span>${p.trava ? "✅ trava no jogo" : "⚠️ jogo sem trava"}</span>${p.adm ? `<span>${p.admTrava ? "✅ trava no ADM" : "⚠️ ADM sem trava"}</span>` : ""}`;
+    const pill = !c ? `<span class="pill warn">Sem cadastro</span>` : open ? `<span class="pill ok">Aberto${c.until ? " até " + fmtT(c.until) : ""}</span>` : `<span class="pill bad">Fechado</span>`;
+    // só aparece algo da trava quando tem problema
+    const avisos = isMain || p.loading ? "" : p.online === false ? `<span class="aviso">site fora do ar</span>`
+      : (!p.trava ? `<span class="aviso">o jogo está sem a trava</span>` : "") + (p.adm && !p.admTrava ? `<span class="aviso">o ADM está sem a trava</span>` : "");
     const acts = !c
       ? `<button class="btn sm" data-reg="${esc(name)}">Cadastrar</button>`
-      : `<button class="btn ok sm" data-open="${esc(name)}">Liberar</button>
-         <select data-for="${esc(name)}"><option value="1">por 1h</option><option value="2" selected>por 2h</option><option value="4">por 4h</option><option value="8">por 8h</option><option value="24">por 24h</option></select>
-         <button class="btn ok sm" data-opent="${esc(name)}">Liberar por tempo</button>
-         <button class="btn bad sm" data-close="${esc(name)}">Bloquear</button>
-         ${isMain ? "" : `<button class="btn ghost sm" data-cfg="${esc(name)}">⚙️</button>`}`;
-    return `<div class="site ${c ? (open ? "open" : "closed") : ""} ${openCfg.has(name) ? "cfgon" : ""}">
-      <div><div class="nm">${isMain ? "🏠 Site principal" : esc(name)}</div>
-        <div class="meta"><a href="${url}" target="_blank">abrir ↗</a>${!isMain && p.adm ? `<a href="/${esc(name)}/ADM/" target="_blank">ADM ↗</a>` : ""}${tr}</div></div>
-      <div>${pill}</div>
+      : `${open ? "" : `<select class="tempo" data-for="${esc(name)}" title="Abrir por quanto tempo"><option value="0">sem prazo</option><option value="1">por 1h</option><option value="2">por 2h</option><option value="4">por 4h</option><option value="8">por 8h</option><option value="24">por 24h</option></select>`}
+         <button class="chave" role="switch" aria-checked="${open}" data-tog="${esc(name)}" title="${open ? "Fechar" : "Abrir"}"></button>
+         ${isMain ? "" : `<button class="btn ghost icon" data-cfg="${esc(name)}" title="Avançado">${IC.eng}</button>`}`;
+    return `<div class="site ${openCfg.has(name) ? "cfgon" : ""}">
+      <div><div class="nm">${esc(bonito(name))} ${pill}</div>
+        <div class="meta"><a href="${url}" target="_blank" rel="noopener">${IC.abre}Abrir</a>${!isMain && p.adm ? `<a href="/${esc(name)}/ADM/" target="_blank" rel="noopener">${IC.adm}ADM</a>` : ""}${avisos}</div></div>
       <div class="acts">${acts}</div>
-      ${c && !isMain ? `<div class="cfg"><span class="hint">Pastas que os jogadores podem gravar:</span><input type="text" data-nodes="${esc(name)}" value="${esc(nodesTxt(c, name))}"><button class="btn sm" data-save="${esc(name)}">Salvar</button><button class="btn bad sm" data-unreg="${esc(name)}">Descadastrar</button></div>` : ""}
+      ${c && !isMain ? `<div class="cfg"><p class="hint">Pastas do Firebase que os JOGADORES podem gravar neste jogo (separadas por vírgula). O resto só o ADM grava.</p><input type="text" data-nodes="${esc(name)}" value="${esc(nodesTxt(c, name))}"><button class="btn sm" data-save="${esc(name)}">Salvar</button><button class="btn bad sm" data-unreg="${esc(name)}">Descadastrar</button></div>` : ""}
     </div>`;
   };
-  $("#sites").innerHTML = reg.concat(unreg).map(row).join("");
+  const grupo = (tit, cls, l) => { l = l.filter(vis).sort(ordem); return l.length ? `<div class="grupo"><h3><span class="bola ${cls}"></span>${tit} · ${l.length}</h3><div class="sites">${l.map(row).join("")}</div></div>` : ""; };
+  const html = grupo("Abertos", "ok", ab) + grupo("Fechados", "bad", fe) + grupo("Sem cadastro", "warn", unreg);
+  $("#sites").innerHTML = html || `<div class="vazio">Nada com esse nome.</div>`;
 }
 const parseNodes = (txt) => { const o = {}; txt.split(/[,\s]+/).map((s) => s.trim()).filter((s) => /^[\w-]+$/.test(s)).forEach((s) => (o[s] = true)); return Object.keys(o).length ? o : null; };
 $("#sites").addEventListener("click", async (e) => {
   const b = e.target.closest("button"); if (!b) return;
   const d = b.dataset;
   try {
-    if (d.reg) { await db.ref("controle/sites/" + d.reg).set({ open: false, escrita: parseNodes(PRESETS[d.reg] ?? ""), t: firebase.database.ServerValue.TIMESTAMP }); toast("Cadastrado (bloqueado). Ajuste as pastas em ⚙️ se precisar."); if (!PRESETS[d.reg] && d.reg !== "principal") { openCfg.add(d.reg); render(); } }
+    if (d.reg) { await db.ref("controle/sites/" + d.reg).set({ open: false, escrita: parseNodes(PRESETS[d.reg] ?? ""), t: firebase.database.ServerValue.TIMESTAMP }); toast("Cadastrado (fechado). Confira as pastas no Avançado."); if (!PRESETS[d.reg] && d.reg !== "principal") { openCfg.add(d.reg); render(); } }
+    else if (d.tog) { const c = ctl[d.tog];
+      if (isOpen(c)) { await db.ref("controle/sites/" + d.tog).update({ open: false, until: null }); toast("Fechado."); }
+      else { const s = document.querySelector(`select[data-for="${d.tog}"]`), hh = s ? +s.value : 0;
+        await db.ref("controle/sites/" + d.tog).update({ open: true, until: hh ? now() + hh * 3600e3 : null }); toast(hh ? `Aberto por ${hh}h` : "Aberto!"); } }
     else if (d.open) { await db.ref("controle/sites/" + d.open).update({ open: true, until: null }); toast("Liberado!"); }
     else if (d.opent) { const h = +document.querySelector(`select[data-for="${d.opent}"]`).value; await db.ref("controle/sites/" + d.opent).update({ open: true, until: now() + h * 3600e3 }); toast(`Liberado por ${h}h`); }
     else if (d.close) { await db.ref("controle/sites/" + d.close).update({ open: false, until: null }); toast("Bloqueado."); }
     else if (d.cfg) { openCfg.has(d.cfg) ? openCfg.delete(d.cfg) : openCfg.add(d.cfg); render(); }
     else if (d.save) { await db.ref("controle/sites/" + d.save + "/escrita").set(parseNodes(document.querySelector(`input[data-nodes="${d.save}"]`).value)); toast("Salvo!"); }
-    else if (d.unreg) { if (!confirm(`Descadastrar "${d.unreg}"? Ele fica bloqueado para todos (só ADM acessa).`)) return; await db.ref("controle/sites/" + d.unreg).remove(); }
+    else if (d.unreg) { if (!confirm(`Descadastrar "${d.unreg}"? Ele fica fechado para todos (só o ADM entra).`)) return; await db.ref("controle/sites/" + d.unreg).remove(); }
   } catch (err) { toast("Sem permissão: " + err.message, true); }
 });
 $("#bAddRepo").onclick = async () => {
   const n = $("#inRepo").value.trim();
   if (!/^[\w.-]+$/.test(n)) return toast("Digite o nome do repositório (como aparece na URL).", true);
-  try { await db.ref("controle/sites/" + n).set({ open: false, escrita: parseNodes(PRESETS[n] ?? ""), t: firebase.database.ServerValue.TIMESTAMP }); $("#inRepo").value = ""; openCfg.add(n); toast("Cadastrado (bloqueado). Confira as pastas em ⚙️."); checkProbe(n); }
+  try { await db.ref("controle/sites/" + n).set({ open: false, escrita: parseNodes(PRESETS[n] ?? ""), t: firebase.database.ServerValue.TIMESTAMP }); $("#inRepo").value = ""; openCfg.add(n); toast("Cadastrado (fechado). Confira as pastas no Avançado."); checkProbe(n); }
   catch (e) { toast("Erro: " + e.message, true); }
 };
 $("#bSetPass").onclick = async () => {
   const v = $("#inPlayerPass").value.trim();
   if (v.length < 4) return toast("Use pelo menos 4 caracteres.", true);
-  try { await db.ref("segredo").set(v); await db.ref("acesso").remove(); await db.ref("controle/senhaAtiva").set(Date.now()); $("#inPlayerPass").value = ""; toast("Senha salva! 🔑"); }
+  try { await db.ref("segredo").set(v); await db.ref("acesso").remove(); await db.ref("controle/senhaAtiva").set(Date.now()); $("#inPlayerPass").value = ""; toast("Senha salva!"); }
   catch (e) { toast("Erro: " + e.message, true); }
 };
 $("#bDelPass").onclick = async () => {
-  if (!confirm("Remover a senha? Sites liberados vão abrir direto para qualquer um com o link.")) return;
-  try { await db.ref("segredo").remove(); await db.ref("controle/senhaAtiva").set(false); await db.ref("acesso").remove(); toast("Senha removida."); }
+  if (!confirm("Desligar a senha? Os jogos abertos vão abrir direto para qualquer um com o link.")) return;
+  try { await db.ref("segredo").remove(); await db.ref("controle/senhaAtiva").set(false); await db.ref("acesso").remove(); toast("Senha desligada."); }
   catch (e) { toast("Erro: " + e.message, true); }
 };
 $("#bLockAll").onclick = async () => {
-  if (!confirm("Bloquear TODOS os sites agora?")) return;
+  if (!confirm("Fechar TODOS os jogos agora?")) return;
   const upd = {}; Object.keys(ctl).forEach((n) => { upd[n + "/open"] = false; upd[n + "/until"] = null; });
-  await db.ref("controle/sites").update(upd); toast("Todos bloqueados 🔒");
+  await db.ref("controle/sites").update(upd); toast("Todos fechados.");
 };
 
 </script>
