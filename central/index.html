@@ -69,7 +69,7 @@ input:focus{border-color:var(--blue)}
 .site .meta svg.i{width:14px;height:14px}
 .aviso{color:var(--warn)}
 .pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:3px 10px;font-weight:900;font-size:12px;white-space:nowrap}
-.pill.ok{background:var(--okbg);color:var(--ok)}.pill.bad{background:#eef3f5;color:var(--soft)}.pill.warn{background:var(--warnbg);color:var(--warn)}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.tempo-on{background:#e6f0ff;color:var(--blue)}.pill.bad{background:#eef3f5;color:var(--soft)}.pill.warn{background:var(--warnbg);color:var(--warn)}
 .acts{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
 /* chave liga/desliga */
 .chave{position:relative;width:52px;height:30px;border-radius:99px;border:0;cursor:pointer;background:#c9d8dc;transition:background .2s;flex:none}
@@ -128,7 +128,7 @@ input:focus{border-color:var(--blue)}
 
   <section class="card">
     <h2>Jogos</h2>
-    <p class="hint"><b>Aberto</b>: qualquer pessoa com o link joga (com a senha dos jogadores, se estiver ligada). <b>Fechado</b>: aparece a tela "Fechado no momento". Você (ADM) sempre entra em tudo, inclusive nos ADMs dos jogos.</p>
+    <p class="hint"><b>Aberto sempre</b>: fica aberto até você fechar. <b>Aberto até…</b>: fecha sozinho na hora marcada. Aberto = qualquer pessoa com o link joga (com a senha dos jogadores, se estiver ligada). <b>Fechado</b>: aparece a tela "Fechado no momento". Você (ADM) sempre entra em tudo, inclusive nos ADMs dos jogos.</p>
     <div class="barra">
       <label class="busca"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/></svg><input type="text" id="inBusca" placeholder="Procurar…" autocomplete="off"></label>
       <button class="btn ghost" id="bRefresh" title="Conferir de novo a lista e as travas"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>Atualizar</button>
@@ -259,6 +259,7 @@ $("#bRefresh").onclick = () => { probe = {}; loadRepos(); };
 
 const isOpen = (c) => !!(c && c.open === true && (!c.until || c.until > now()));
 const fmtT = (t) => new Date(t).toLocaleString("pt-BR", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" });
+const falta = (t) => { const m = Math.max(1, Math.round((t - now()) / 60000)); return m < 60 ? m + " min" : Math.floor(m / 60) + "h" + (m % 60 ? " " + (m % 60) + "min" : ""); };
 const nodesTxt = (c, name) => c && c.escrita ? Object.keys(c.escrita).join(", ") : (PRESETS[name] ?? "");
 
 const SMALL = new Set(["de","do","da","dos","das","e","o","a","em","no","na","com"]);
@@ -277,7 +278,7 @@ function render() {
     if (!probe[name] && name !== "principal") setTimeout(() => checkProbe(name), 0);
     const c = ctl[name], p = probe[name] || { loading: true }, open = isOpen(c), isMain = name === "principal";
     const url = isMain ? "/" : `/${name}/`;
-    const pill = !c ? `<span class="pill warn">Sem cadastro</span>` : open ? `<span class="pill ok">Aberto${c.until ? " até " + fmtT(c.until) : ""}</span>` : `<span class="pill bad">Fechado</span>`;
+    const pill = !c ? `<span class="pill warn">Sem cadastro</span>` : open ? (c.until ? `<span class="pill tempo-on">Aberto até ${fmtT(c.until)} · falta ${falta(c.until)}</span>` : `<span class="pill ok">Aberto sempre</span>`) : `<span class="pill bad">Fechado</span>`;
     // só aparece algo da trava quando tem problema
     const avisos = isMain || p.loading ? "" : p.online === false ? `<span class="aviso">site fora do ar</span>`
       : (!p.trava ? `<span class="aviso">o jogo está sem a trava</span>` : "") + (p.adm && !p.admTrava ? `<span class="aviso">o ADM está sem a trava</span>` : "");
