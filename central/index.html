@@ -80,9 +80,7 @@ select{border:2px solid var(--line);border-radius:10px;padding:7px 8px;font-weig
 <!-- login -->
 <div class="center hide" id="vLogin"><div class="login card">
   <h2>Entrar</h2>
-  <input type="email" id="inMail" placeholder="e-mail" autocomplete="username">
-  <input type="password" id="inPass" placeholder="senha" autocomplete="current-password">
-  <button class="btn" id="bSend">Entrar</button>
+  <button class="btn" id="bSend">Entrar com Google</button>
   <div class="msg" id="loginMsg"></div>
 </div></div>
 
@@ -153,27 +151,26 @@ const auth = firebase.auth(), db = firebase.database();
 let offset = 0; db.ref(".info/serverTimeOffset").on("value", (s) => (offset = s.val() || 0));
 const now = () => Date.now() + offset;
 
-// ---------- login (e-mail + senha da equipe; nenhum e-mail é enviado) ----------
+// ---------- login: SÓ "Entrar com Google" (sem senha para tentarem adivinhar). Quem entra de verdade é decidido nas REGRAS do
+// Firebase (a conta da equipe); qualquer outra conta Google entra mas cai em "Sem acesso" e é desconectada. ----------
 auth.onAuthStateChanged(onUser);
 $("#bSend").onclick = async () => {
-  const email = $("#inMail").value.trim().toLowerCase(), pass = $("#inPass").value;
-  if (!email || !pass) return;
   $("#bSend").disabled = true; $("#loginMsg").textContent = "";
-  try { await auth.signInWithEmailAndPassword(email, pass); $("#inPass").value = ""; }
-  catch (e) { $("#loginMsg").className = "msg bad"; $("#loginMsg").textContent = "E-mail ou senha incorretos."; }
+  try { const p = new firebase.auth.GoogleAuthProvider(); p.setCustomParameters({ prompt: "select_account" }); await auth.signInWithPopup(p); }
+  catch (e) { if (!/popup-closed|cancelled-popup/.test(e.code || "")) { $("#loginMsg").className = "msg bad"; $("#loginMsg").textContent = "Não deu para entrar com o Google. Tente de novo."; } }
   $("#bSend").disabled = false;
 };
-["#inMail", "#inPass"].forEach((id) => $(id).addEventListener("keydown", (e) => { if (e.key === "Enter") $("#bSend").click(); }));
 $("#bOut").onclick = async () => { await auth.signOut(); location.reload(); };
 
-let started = false;
+let started = false, semAcesso = false;
 async function onUser(u) {
-  if (!u || u.isAnonymous) { $("#who").classList.add("hide"); $("#topBar").classList.add("hide"); show("vLogin"); return; }
+  if (!u || u.isAnonymous) { $("#who").classList.add("hide"); $("#topBar").classList.add("hide"); show("vLogin");
+    if (semAcesso) { semAcesso = false; $("#loginMsg").className = "msg bad"; $("#loginMsg").textContent = "Essa conta Google não tem acesso."; } return; }
   $("#who").classList.remove("hide"); $("#whoMail").textContent = u.email || "";
   let isAdmin = false;
   try { await db.ref("admcheck").once("value"); isAdmin = true; } catch (e) {}
-  if (!isAdmin) {
-    show("vWait"); return;
+  if (!isAdmin) { // conta Google que não é a da equipe: sai na hora (não fica logada no navegador)
+    semAcesso = true; try { await auth.signOut(); } catch (e) {} return;
   }
   show("vPanel"); $("#topBar").classList.remove("hide");
   if (!started) { started = true; startPanel(u); }
