@@ -81,7 +81,13 @@ input:focus{border-color:var(--blue)}
 .cfg{grid-column:1/-1;display:none;gap:8px;align-items:center;flex-wrap:wrap;background:#f6fbfc;border-radius:12px;padding:10px 12px}
 .site.cfgon .cfg{display:flex}
 .cfg .hint{margin:0;flex-basis:100%}
-.cfg input{flex:1;min-width:200px;font-size:13px;padding:7px 10px}
+.cfg{flex-direction:column;align-items:stretch}
+.cfg-sec{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:14px;color:var(--deep)}
+.cfg-st{font-size:12.5px;font-weight:800;color:var(--soft)}
+.cfg-bt{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.cfg-bt .hint{flex-basis:auto;margin-right:4px}
+.cfg input[type=text]{flex:1;min-width:200px;font-size:13px;padding:7px 10px}
+.cfg input[type=datetime-local]{border:2px solid var(--line);border-radius:9px;padding:5px 8px;font-weight:800;color:var(--deep);font-family:inherit}
 .vazio{padding:18px;text-align:center;color:var(--soft);font-weight:800}
 /* senha */
 .senha-est{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
@@ -260,13 +266,17 @@ $("#bRefresh").onclick = () => { probe = {}; loadRepos(); };
 const isOpen = (c) => !!(c && c.open === true && (!c.until || c.until > now()));
 const fmtT = (t) => new Date(t).toLocaleString("pt-BR", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" });
 const falta = (t) => { const m = Math.max(1, Math.round((t - now()) / 60000)); return m < 60 ? m + " min" : Math.floor(m / 60) + "h" + (m % 60 ? " " + (m % 60) + "min" : ""); };
+const dtLocal = (t) => { const d = new Date(t - new Date(t).getTimezoneOffset() * 60000); return d.toISOString().slice(0, 16); };
 const nodesTxt = (c, name) => c && c.escrita ? Object.keys(c.escrita).join(", ") : (PRESETS[name] ?? "");
 
 const SMALL = new Set(["de","do","da","dos","das","e","o","a","em","no","na","com"]);
 const bonito = (n) => n === "principal" ? "Página principal (menu)" : n.replace(/[-_.]+/g, " ").trim().split(/\s+/).map((w, i) => (i && SMALL.has(w.toLowerCase())) ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 const IC = { abre: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>', adm: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6Z"/></svg>', eng: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>' };
 $("#inBusca").addEventListener("input", () => render());
+$("#sites").addEventListener("focusout", () => setTimeout(render, 50));
 function render() {
+  // não refaz a lista enquanto você digita/escolhe algo nas configurações
+  const foco = document.activeElement; if (foco && foco.closest && foco.closest("#sites .cfg") && /INPUT|SELECT/.test(foco.tagName)) return;
   const names = Array.from(new Set(["principal"].concat(Object.keys(ctl), Object.keys(PRESETS), repos)));
   const reg = names.filter((n) => ctl[n]), unreg = names.filter((n) => !ctl[n]);
   const t = $("#inBusca").value.trim().toLowerCase();
@@ -286,12 +296,22 @@ function render() {
       ? `<button class="btn sm" data-reg="${esc(name)}">Cadastrar</button>`
       : `${open ? "" : `<select class="tempo" data-for="${esc(name)}" title="Abrir por quanto tempo"><option value="0">sem prazo</option><option value="1">por 1h</option><option value="2">por 2h</option><option value="4">por 4h</option><option value="8">por 8h</option><option value="24">por 24h</option></select>`}
          <button class="chave" role="switch" aria-checked="${open}" data-tog="${esc(name)}" title="${open ? "Fechar" : "Abrir"}"></button>
-         ${isMain ? "" : `<button class="btn ghost icon" data-cfg="${esc(name)}" title="Avançado">${IC.eng}</button>`}`;
+         <button class="btn ghost icon" data-cfg="${esc(name)}" title="Configurações (tempo aberto, pastas)">${IC.eng}</button>`;
     return `<div class="site ${openCfg.has(name) ? "cfgon" : ""}">
       <div><div class="nm">${esc(bonito(name))} ${pill}</div>
         <div class="meta"><a href="${url}" target="_blank" rel="noopener">${IC.abre}Abrir</a>${!isMain && p.adm ? `<a href="/${esc(name)}/ADM/" target="_blank" rel="noopener">${IC.adm}ADM</a>` : ""}${avisos}</div></div>
       <div class="acts">${acts}</div>
-      ${c && !isMain ? `<div class="cfg"><p class="hint">Pastas do Firebase que os JOGADORES podem gravar neste jogo (separadas por vírgula). O resto só o ADM grava.</p><input type="text" data-nodes="${esc(name)}" value="${esc(nodesTxt(c, name))}"><button class="btn sm" data-save="${esc(name)}">Salvar</button><button class="btn bad sm" data-unreg="${esc(name)}">Descadastrar</button></div>` : ""}
+      ${c ? `<div class="cfg">
+        <div class="cfg-sec"><b>Tempo aberto</b><span class="cfg-st">${open ? (c.until ? `aberto até ${fmtT(c.until)} · falta ${falta(c.until)}` : "aberto sempre (até você fechar)") : "fechado agora"}</span></div>
+        <div class="cfg-bt">
+          <button class="btn sm ${open && !c.until ? "ok" : "ghost"}" data-t="${esc(name)}|0">Sempre aberto</button>
+          ${[["30 min", .5], ["1h", 1], ["2h", 2], ["4h", 4], ["8h", 8], ["24h", 24]].map(([l, h]) => `<button class="btn sm ghost" data-t="${esc(name)}|${h}" title="Abre agora e fecha sozinho daqui a ${l}">${l}</button>`).join("")}
+        </div>
+        ${open && c.until ? `<div class="cfg-bt"><span class="hint" style="margin:0">Mais tempo:</span>${[["+15 min", .25], ["+30 min", .5], ["+1h", 1]].map(([l, h]) => `<button class="btn sm ghost" data-mais="${esc(name)}|${h}">${l}</button>`).join("")}</div>` : ""}
+        <div class="cfg-bt"><span class="hint" style="margin:0">Fechar sozinho em:</span><input type="datetime-local" data-ate="${esc(name)}" value="${c.until ? dtLocal(c.until) : ""}"><button class="btn sm" data-defate="${esc(name)}">Definir</button>${open ? `<button class="btn bad sm" data-fechar="${esc(name)}">Fechar agora</button>` : ""}</div>
+        ${isMain ? "" : `<div class="cfg-sec" style="margin-top:6px"><b>Pastas que os jogadores gravam</b><span class="cfg-st">separadas por vírgula · o resto só o ADM grava</span></div>
+        <div class="cfg-bt"><input type="text" data-nodes="${esc(name)}" value="${esc(nodesTxt(c, name))}"><button class="btn sm" data-save="${esc(name)}">Salvar</button><button class="btn bad sm" data-unreg="${esc(name)}">Descadastrar</button></div>`}
+      </div>` : ""}
     </div>`;
   };
   const grupo = (tit, cls, l) => { l = l.filter(vis).sort(ordem); return l.length ? `<div class="grupo"><h3><span class="bola ${cls}"></span>${tit} · ${l.length}</h3><div class="sites">${l.map(row).join("")}</div></div>` : ""; };
@@ -311,6 +331,10 @@ $("#sites").addEventListener("click", async (e) => {
     else if (d.open) { await db.ref("controle/sites/" + d.open).update({ open: true, until: null }); toast("Liberado!"); }
     else if (d.opent) { const h = +document.querySelector(`select[data-for="${d.opent}"]`).value; await db.ref("controle/sites/" + d.opent).update({ open: true, until: now() + h * 3600e3 }); toast(`Liberado por ${h}h`); }
     else if (d.close) { await db.ref("controle/sites/" + d.close).update({ open: false, until: null }); toast("Bloqueado."); }
+    else if (d.t) { const [n, h] = d.t.split("|"); const hh = +h; await db.ref("controle/sites/" + n).update({ open: true, until: hh ? now() + hh * 3600e3 : null }); toast(hh ? `Aberto por ${hh < 1 ? hh * 60 + " min" : hh + "h"} (contando de agora)` : "Aberto sempre"); }
+    else if (d.mais) { const [n, h] = d.mais.split("|"); const c = ctl[n] || {}; const base = c.until && c.until > now() ? c.until : now(); await db.ref("controle/sites/" + n).update({ open: true, until: base + (+h) * 3600e3 }); toast("Mais tempo!"); }
+    else if (d.defate) { const v = document.querySelector(`input[data-ate="${d.defate}"]`).value; const t = v ? new Date(v).getTime() : 0; if (!t || t <= Date.now()) return toast("Escolha uma data e hora no futuro.", true); await db.ref("controle/sites/" + d.defate).update({ open: true, until: t - Date.now() + now() }); toast("Fecha sozinho em " + fmtT(t)); }
+    else if (d.fechar) { await db.ref("controle/sites/" + d.fechar).update({ open: false, until: null }); toast("Fechado."); }
     else if (d.cfg) { openCfg.has(d.cfg) ? openCfg.delete(d.cfg) : openCfg.add(d.cfg); render(); }
     else if (d.save) { await db.ref("controle/sites/" + d.save + "/escrita").set(parseNodes(document.querySelector(`input[data-nodes="${d.save}"]`).value)); toast("Salvo!"); }
     else if (d.unreg) { if (!confirm(`Descadastrar "${d.unreg}"? Ele fica fechado para todos (só o ADM entra).`)) return; await db.ref("controle/sites/" + d.unreg).remove(); }
