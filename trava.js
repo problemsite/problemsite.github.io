@@ -11,6 +11,13 @@
    - adm:   só abre para navegadores liberados (ADM).
    - Quem é ADM vê tudo, mesmo bloqueado.
    A proteção de verdade fica nas REGRAS do Firebase; isto aqui é a tela.
+
+   COFRE (data-cofre="1"): o site publicado só tem esta página + arquivos
+   EMBARALHADOS (pasta x/). A chave fica no Firebase (chaves/<site>) e as
+   regras só entregam quando o jogo está aberto (e com a senha, se ligada);
+   a do ADM só para a conta da equipe. Com a chave, o sw.js do site
+   desembaralha os arquivos no navegador. Fechou = a chave é esquecida e a
+   página volta para a tela de bloqueio.
    ===================================================================== */
 (function () {
   const CONFIG = {
@@ -26,6 +33,10 @@
   const SITE = (me && me.dataset.site) || "";
   const MODO = (me && me.dataset.modo) || "jogo"; // jogo | adm | principal
   const SDK = "https://www.gstatic.com/firebasejs/10.12.2/";
+  const COFRE = !!(me && me.dataset.cofre);           // esta é a página-cofre (o jogo ainda não foi aberto)
+  const ESCOPO = "/" + SITE + "/";
+  const temSW = "serviceWorker" in navigator;
+  const dentroDoCofre = !COFRE && temSW && !!navigator.serviceWorker.controller; // página já desembaralhada
 
   // os sites usam esta config (pasta própria dentro do Firebase único)
   window.FIREBASE_CONFIG = CONFIG;
@@ -81,6 +92,11 @@
     ov.classList.add("on");
     document.documentElement.style.overflow = "hidden";
   }
+  function showMsg(titulo, txt) {
+    ensureUI(); ovKind = "msg";
+    ov.innerHTML = `<div class="tb"><div class="hex">🔒</div><h2>${titulo}</h2><small>${txt || ""}</small></div>`;
+    ov.classList.add("on"); document.documentElement.style.overflow = "hidden";
+  }
   function hideLock() { if (ov) ov.classList.remove("on"); ovKind = ""; document.documentElement.style.overflow = ""; }
   // tela da senha dos jogadores
   let tryPass = null;
@@ -130,6 +146,45 @@
   };
   window.Trava = api;
 
+  // ---------- cofre ----------
+  let dbRef = null, abrindo = false;
+  const pede = (sw, msg) => new Promise((ok) => {
+    const ch = new MessageChannel(); ch.port1.onmessage = () => ok(true);
+    sw.postMessage(msg, [ch.port2]); setTimeout(() => ok(false), 4000);
+  });
+  async function swAtivo() {
+    const reg = await navigator.serviceWorker.register(ESCOPO + "sw.js", { scope: ESCOPO });
+    const sw = reg.active || reg.waiting || reg.installing;
+    if (sw.state !== "activated") await new Promise((ok) => { sw.addEventListener("statechange", () => { if (sw.state === "activated") ok(); }); setTimeout(ok, 5000); });
+    return reg.active || sw;
+  }
+  async function abreCofre() {
+    if (abrindo) return; abrindo = true;
+    showMsg("Abrindo…", "");
+    if (!temSW) { showMsg("Não deu para abrir", "Este navegador não abre o jogo (no modo anônimo de alguns navegadores não funciona)."); return; }
+    // evita ficar recarregando sem parar se algo der errado
+    const K = "cofre-tent:" + SITE, t = JSON.parse(sessionStorage.getItem(K) || "[]").filter((x) => Date.now() - x < 30000);
+    if (t.length >= 3) { showMsg("Não deu para abrir", "Recarregue a página daqui a pouco."); sessionStorage.removeItem(K); return; }
+    try {
+      let jogo = null, adm = null;
+      try { jogo = (await dbRef.ref("chaves/" + SITE + "/jogo").once("value")).val(); } catch (e) {}
+      if (admin) { try { adm = (await dbRef.ref("chaves/" + SITE + "/adm").once("value")).val(); } catch (e) {} }
+      if (!(MODO === "adm" ? adm : jogo)) { abrindo = false; showLock(MODO === "adm" ? "adm" : "jogo"); return; }
+      const ate = (!admin && ctl && ctl.until) ? Math.min(ctl.until - offset, Date.now() + 12 * 3600e3) : Date.now() + 12 * 3600e3;
+      const sw = await swAtivo();
+      await pede(sw, { tipo: "chave", jogo, adm, exp: ate });
+      t.push(Date.now()); sessionStorage.setItem(K, JSON.stringify(t));
+      location.reload();
+    } catch (e) { console.warn("[trava] cofre", e); showMsg("Não deu para abrir", "Recarregue a página."); }
+  }
+  let esquecendo = false;
+  async function esqueceCofre() {
+    if (esquecendo) return; esquecendo = true;
+    showMsg("Fechado no momento", "");
+    try { await pede(navigator.serviceWorker.controller, { tipo: "esquece" }); } catch (e) {}
+    location.reload();
+  }
+
   function computeOpen() {
     if (admin) return true;
     if (MODO === "adm") return false;
@@ -143,8 +198,10 @@
   function apply() {
     const open = computeOpen(), pass = open && passNeeded();
     if (lockedState === null) lockedState = !open || pass;
+    if ((!open || pass) && dentroDoCofre) { esqueceCofre(); return; } // fechou com o jogo na tela: tira o jogo e volta para o cofre
     if (!open) { showLock(MODO === "adm" ? "adm" : "jogo"); lockedState = true; }
     else if (pass) { showPass(); lockedState = true; }
+    else if (COFRE) { abreCofre(); lockedState = false; }
     else {
       hideLock();
       // estava fechado e abriu: recarrega para os dados do site carregarem
@@ -167,7 +224,7 @@
       if (!firebase.database) await loadScript(SDK + "firebase-database-compat.js");
     }
     if (!firebase.apps.length) firebase.initializeApp(CONFIG);
-    const db = firebase.database(), auth = firebase.auth();
+    const db = firebase.database(), auth = firebase.auth(); dbRef = db;
     db.ref(".info/serverTimeOffset").on("value", (s) => { offset = s.val() || 0; });
 
     // ---- senha dos jogadores ----
