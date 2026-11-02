@@ -276,7 +276,7 @@ footer .mini{display:block;width:46px;margin:0 auto 6px}
             <div class="bar"><i></i><i></i><i></i><em>${esc(domain)}</em></div>
             <div class="shot">
               <div class="ph" data-site="${esc(s.url)}" aria-hidden="true">${icon}</div>
-              <iframe data-src="${esc(s.url)}" title="Prévia de ${esc(s.title)}" tabindex="-1" aria-hidden="true" scrolling="no"></iframe>
+              <iframe data-src="${esc(s.url)}" sandbox="" title="Prévia de ${esc(s.title)}" tabindex="-1" aria-hidden="true" scrolling="no"></iframe>
             </div>
           </div>
           ${isNew ? `<span class="badge">Novo!</span>` : ""}
@@ -298,38 +298,14 @@ footer .mini{display:block;width:46px;margin:0 auto 6px}
     for (const e of entries) {
       if (!e.isIntersecting) continue;
       const f = e.target;
-      f.addEventListener("load", () => congela(f), { once: true });
+      f.addEventListener("load", () => f.classList.add("on"), { once: true });
       f.src = f.dataset.src;
       io.unobserve(f);
     }
   }, { rootMargin: "200px" }) : null;
 
-  // PRÉVIA CONGELADA: o site abre só por um instante (calado) para aparecer e vira uma FOTO parada — sem som, sem animação,
-  // sem ficar conectado. A foto é a página copiada sem os scripts (desenhos em canvas viram imagem) numa moldura que não roda nada.
-  function silencia(w){ try { w.document.querySelectorAll("audio,video").forEach(m => { m.muted = true; m.pause(); }); } catch {} }
-  function congela(f){
-    let w; try { w = f.contentWindow; w.document; } catch { w = null; }
-    if (!w) { f.setAttribute("sandbox", ""); f.src = f.dataset.src; f.classList.add("on"); return; } // outro endereço: abre sem scripts
-    silencia(w); const t = setInterval(() => silencia(w), 150);
-    setTimeout(() => {
-      clearInterval(t);
-      try {
-        const d = w.document, clone = d.documentElement.cloneNode(true);
-        const orig = [...d.querySelectorAll("canvas")], copias = [...clone.querySelectorAll("canvas")];
-        copias.forEach((c, i) => { try { const img = d.createElement("img"); img.src = orig[i].toDataURL(); img.style.cssText = getComputedStyle(orig[i]).cssText || ""; img.width = orig[i].width; img.height = orig[i].height; img.className = orig[i].className; img.setAttribute("style", orig[i].getAttribute("style") || ""); c.replaceWith(img); } catch {} });
-        clone.querySelectorAll("script,audio,video,iframe,noscript").forEach(x => x.remove());
-        clone.querySelectorAll("*").forEach(x => { for (const a of [...x.attributes]) if (/^on/i.test(a.name)) x.removeAttribute(a.name); });
-        clone.querySelectorAll("input,textarea,select").forEach((x, i) => { const o = d.querySelectorAll("input,textarea,select")[i]; if (o && "value" in o) x.setAttribute("value", o.value); });
-        let head = clone.querySelector("head"); if (!head) { head = d.createElement("head"); clone.prepend(head); }
-        const base = d.createElement("base"); base.href = d.baseURI; head.prepend(base);
-        const foto = document.createElement("iframe");
-        foto.setAttribute("sandbox", ""); foto.setAttribute("tabindex", "-1"); foto.setAttribute("aria-hidden", "true"); foto.setAttribute("scrolling", "no");
-        foto.title = f.title; foto.srcdoc = "<!doctype html>" + clone.outerHTML;
-        foto.addEventListener("load", () => foto.classList.add("on"), { once: true });
-        f.replaceWith(foto); // a página de verdade sai daqui: para tudo
-      } catch { f.setAttribute("sandbox", ""); f.src = f.dataset.src; f.classList.add("on"); }
-    }, 1800);
-  }
+  // PRÉVIA SEM RODAR NADA: a moldura da prévia tem sandbox="" — mostra o desenho da página (HTML e CSS), mas NÃO roda nenhum script:
+  // sem som, sem animação, sem conectar no Firebase. (Antes o site abria de verdade por um instante e o áudio chegava a tocar.)
 
   // ---------- ícone/favicon de cada site ----------
   const ICON_KEY = "problems-icons-v2";
